@@ -406,7 +406,7 @@ static void SetTitleIndicatorOnTimeout(XtPointer closure,XtIntervalId *id)
       SetTitleIndicator(w,mode);
 }
 
-Bool  window_is_top_level(Window w)
+static Bool window_is_top_level(Window w)
 {
    int num,i;
    Atom *list=XListProperties(disp,w,&num);
@@ -426,6 +426,15 @@ Bool  window_is_top_level(Window w)
    }
    XFree(list);
    return False;
+}
+
+static Bool window_is_ours(Window w)
+{
+   if(!top_level)
+      return False;
+   return (ClientId(w)==ClientId(XtWindow(top_level)));
+   /* Also possibe:
+   return (XtWindowToWidget(disp,w)!=NULL); */
 }
 
 static void SaveModeForWindow(Window w)
@@ -784,11 +793,10 @@ static void AddWindow(Window w,int tmout,int max_depth)
       return;
    }
 
-   if(w==focus_window || parent==root1 || ClientId(parent)!=ClientId(w))
+   if(w==focus_window)
       all_events_allowed=True;
 
-   if(!all_events_allowed
-   && (top_level==0 || ClientId(w)!=ClientId(XtWindow(top_level))))
+   if(!all_events_allowed && !window_is_ours(w))
    {
       /* if it is not our own window, unselect any events,
          so that all_event_masks has only event bits of other apps. */
