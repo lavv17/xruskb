@@ -1,7 +1,7 @@
 Q: I've installed xruskb and it works, but I don't see russian letters but
    see accented latin letters instead.
 A: You have to tune your applications to use proper russian fonts.
-   See Cyrillic-HOWTO at ftp://metalab.unc.edu/pub/Linux/docs/HOWTO
+   See Cyrillic-HOWTO at ftp://metalab.unc.edu/pub/Linux/docs/HOWTO/unmaintained/
    (it is not only for linux)
 
 Q: I cannot input russian letters.
@@ -14,7 +14,7 @@ A: There can be several reasons. If you use *-cyr key map, then it is
       ru_RU.koi8r    ru_RU.KOI8-R
 
    If you use *-koi8 key maps (or different encoding), then sometimes it is
-   important not to have a localization. It is a hack method anyway. See also
+   important NOT to have a localization. It is a hack method anyway. See also
    Cyrillic-HOWTO on how to tune bash.
 
 Q: Which keyboard map should I use?
