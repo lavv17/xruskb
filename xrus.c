@@ -1,5 +1,5 @@
 /*
-  xrus - keyboard switcher/indicator
+  xrus - keyboard switcher/indicator and autolock.
   Copyright (c) 1995-2000 Alexander V. Lukyanov
   This is free software with no warranty.
   See COPYING for details.
@@ -31,6 +31,7 @@
 #include <X11/StringDefs.h>
 #include <X11/Shell.h>
 #include <X11/Xmd.h>
+#include <X11/Xlibint.h>   /* for resource_mask */
 
 #if TK==TK_MOTIF
 #include <Xm/Xm.h>
@@ -249,10 +250,10 @@ unsigned char *prop;
 
 Atom kbd_state_atom;
 Window focus_window;
+Window last_top_level_focus_window;
 
 int   xrus_check=1;
 
-void  AddChildren(Window);
 void  SetAlarm();
 
 int   (*old_error_handler)(Display *d,XErrorEvent *ev);
@@ -274,6 +275,9 @@ static void  ShowSwitchButton(void);
 #define MaxLetterKeySym 0x1000
 #define NationalKeySym(ks) (ks>=128 && ks<MaxLetterKeySym)
 #define AsciiKeySym(ks) (ks>0 && ks<128)
+
+XID client_id_mask;
+#define ClientId(w) ((w)&client_id_mask)
 
 /*________________________________________________________________________
 */
@@ -376,10 +380,58 @@ static void SetTitleIndicator(Window w,int mode)
    XSetWMName(disp,w,&prop);
 }
 
+static int GetKbdState(Window w)
+{
+   long *prop=0;
+   if(XGetWindowProperty(disp,w,kbd_state_atom,0L,256L,0,XA_CARDINAL,
+         &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
+        ==Success && type_ret==XA_CARDINAL && nitems_ret==1 && prop)
+   {
+      int ret=(prop[0]&SAVE_MASK);
+      XFree(prop);
+      return ret;
+   }
+   return -1;
+}
+
+static void SetTitleIndicatorOnTimeout(XtPointer closure,XtIntervalId *id)
+{
+   Window w=(Window)closure;
+   int mode=GetKbdState(w);
+   if(mode!=-1)
+      SetTitleIndicator(w,mode);
+}
+
+Bool  window_is_top_level(Window w)
+{
+   int num,i;
+   Atom *list=XListProperties(disp,w,&num);
+
+   if(!list)
+      return False;
+
+   for(i=0; i<num; i++)
+   {
+      if(list[i]==XA_WM_NAME
+      || list[i]==XA_WM_CLASS
+      || list[i]==XA_WM_COMMAND)
+      {
+         XFree(list);
+         return True;
+      }
+   }
+   XFree(list);
+   return False;
+}
+
 static void SaveModeForWindow(Window w)
 {
    long m=Mode&SAVE_MASK;
-   if(w==0 || !AppData.per_window_state)
+   if(!AppData.per_window_state)
+      return;
+   if(w==0 || !window_is_top_level(w))
+      w=last_top_level_focus_window;
+   if(w==0)
       return;
    SetTitleIndicator(w,Mode);
    XChangeProperty(disp,w,kbd_state_atom,XA_CARDINAL,32,
@@ -484,20 +536,6 @@ void  SwitchKeyboard(int to)
    ShowSwitchButton();
 }
 
-static int GetKbdState(Window w)
-{
-   long *prop=0;
-   if(XGetWindowProperty(disp,w,kbd_state_atom,0L,256L,0,XA_CARDINAL,
-         &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
-        ==Success && type_ret==XA_CARDINAL && nitems_ret==1 && prop)
-   {
-      int ret=(prop[0]&SAVE_MASK);
-      XFree(prop);
-      return ret;
-   }
-   return -1;
-}
-
 static void SwitchKeyboardForWindow(Window w)
 {
    int mode;
@@ -554,21 +592,21 @@ void load_map_delayed(const char *map)
 }
 
 #if TK!=TK_NONE
-void  RaiseButton()
+static void RaiseButton()
 {
-   if(AppData.wm_icon || AppData.wmaker_icon)
+   if(AppData.wm_icon || AppData.wmaker_icon || top_level==0)
       return;
    XRaiseWindow(disp,XtWindow(top_level));
 }
 
-void  RaiseButtonOnTimeout(XtPointer closure,XtIntervalId *id)
+static void RaiseButtonOnTimeout(XtPointer closure,XtIntervalId *id)
 {
    (void)closure; (void)id;
    raise_tmout=-1;
    RaiseButton();
 }
 
-void  SetTitle(int n)
+static void SetTitle(int n)
 {
    const char *title=(n==0 ? AppData.title0 : AppData.title1);
    if(title==0)
@@ -579,7 +617,7 @@ void  SetTitle(int n)
 }
 
 /* shows proper indicator button */
-void  ShowSwitchButton(void)
+static void ShowSwitchButton(void)
 {
    int   to_manage=-1;
 
@@ -691,148 +729,122 @@ void  DelWindow(Window w)
    }
 }
 
-Bool  window_is_top_level(Window w)
-{
-   int num,i;
-   Atom *list=XListProperties(disp,w,&num);
+static void AddWindow(Window w,int tmout,int max_depth);
 
-   if(!list)
-      return False;
-
-   for(i=0; i<num; i++)
-   {
-      if(list[i]==XA_WM_NAME
-      || list[i]==XA_WM_CLASS
-      || list[i]==XA_WM_COMMAND)
-      {
-         XFree(list);
-         return True;
-      }
-   }
-   XFree(list);
-   return False;
-}
-
-int   is_wm_window(Window w)
-{
-   Window   root1,parent,*children;
-   unsigned children_num,i;
-   int   is=0;
-
-   if(XQueryTree(disp,w,&root1,&parent,&children,&children_num))
-   {
-      is|=(parent==root1);
-#if 0
-      for(i=0; !is && i<children_num; i++)
-      {
-         is|=window_is_top_level(children[i]);
-      }
-      XFree(children);
-#endif
-   }
-   return is;
-}
-
-void  AddWindow(Window w,int tmout);
-
-void  AddWindowOnTimeout(XtPointer closure,XtIntervalId *id)
+static void AddWindowOnTimeout(XtPointer closure,XtIntervalId *id)
 {
    (void)id;
    DelWindow((Window)closure);
-   AddWindow((Window)closure,False);
+   AddWindow((Window)closure,False,1000000);
 }
 
-void  AddWindow(Window w,int tmout)
+static void XrusCheck(Window w)
+{
+   int class_len=strlen(AppClass);
+   XTextProperty prop;
+   unsigned char *zero;
+
+   if(!xrus_check)
+      return;
+
+   if(!XGetTextProperty(disp,w,&prop,XA_WM_CLASS))
+      return;
+
+   if(prop.format!=8)
+      return;
+
+   zero=memchr(prop.value,0,prop.nitems);
+   if(zero && zero+1+class_len<=prop.value+prop.nitems
+   && !memcmp(zero+1,AppClass,class_len)
+   && (zero+1+class_len==prop.value+prop.nitems
+       || zero[1+class_len]==0))
+   {
+      fprintf(stderr,"%s: xrus already runs on the display\n",program);
+      exit(1);
+   }
+   XFree(prop.value);
+}
+
+static void AddWindow(Window w,int tmout,int max_depth)
 {
    XWindowAttributes wa;
    long mask;
-   Bool is_top_level;
-
-   if(AddToWindowCache(w)) /* if the window was not in cache */
-   {
-      if(!XtWindowToWidget(disp,w))
-      {
-         /* if it is not our own window, unselect any events */
-         XSelectInput(disp,w,0);
-      }
-
-      if(!XGetWindowAttributes(disp,w,&wa))
-      {
-         DelWindow(w);
-         return;
-      }
-
-      mask=wa.your_event_mask;
-
-      /* we want to be notified of subwindows creation/destruction etc */
-      mask|=SubstructureNotifyMask;
-
-      /* we request events only if
-         1. the window already requested this kind of events
-         2. the window is blocking the events from propagation
-         3. this window is wm's one or top level one
-            (for the case the application itself doesn't want these events)
-      */
-      mask|=(wa.all_event_masks|wa.do_not_propagate_mask)
-            &(KeyPressMask|KeyReleaseMask|PointerMotionMask);
-
-      /* we always want both Press and Release events */
-      if(mask&(KeyPressMask|KeyReleaseMask))
-         mask|=(KeyPressMask|KeyReleaseMask);
-
-      is_top_level=window_is_top_level(w);
-
-      /* third condition */
-      if((mask&(KeyPressMask|KeyReleaseMask))
-             !=(KeyPressMask|KeyReleaseMask)
-      && (w==wa.root || is_top_level || is_wm_window(w)))
-         mask|=(KeyPressMask|KeyReleaseMask);
-      else
-         DelWindow(w);  /* we'll check input mask later */
-
-      if(w==wa.root)
-	 mask|=PointerMotionMask;   /* always want it for root window */
-
-      if(is_top_level)
-         mask|=FocusChangeMask|PropertyChangeMask;
-
-      XSelectInput(disp,w,mask);
-
-      AddChildren(w);
-
-      if(tmout)
-      {
-         XtAppAddTimeOut(app_context,AppData.recheckTime,AddWindowOnTimeout,
-                         (XtPointer)w);
-      }
-   }
-}
-
-void  AddChildren(Window w)
-{
-   Window   root,parent,*children;
+   Window root1,parent,*children;
    unsigned children_num,i;
+   Bool all_events_allowed=False;
 
-   if(xrus_check)
+   if(max_depth<1)
+      return;
+
+   if(!AddToWindowCache(w)) /* if the window is in cache, skip it */
+      return;
+
+   XrusCheck(w);
+
+   if(!XQueryTree(disp,w,&root1,&parent,&children,&children_num))
    {
-      if(XGetWindowProperty(disp,w,XA_WM_CLASS,0L,256L,0,XA_STRING,
-            &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,&prop)
-         ==Success && type_ret==XA_STRING)
-      {
-         if(!strcmp((char*)(prop+strlen((char*)prop)+1),AppClass))
-         {
-            fprintf(stderr,"%s: xrus already runs on the display\n",program);
-            exit(1);
-         }
-         XFree(prop);
-      }
+      DelWindow(w);
+      return;
    }
 
-   if(XQueryTree(disp,w,&root,&parent,&children,&children_num))
+   if(w==focus_window || parent==root1 || ClientId(parent)!=ClientId(w))
+      all_events_allowed=True;
+
+   if(!all_events_allowed
+   && (top_level==0 || ClientId(w)!=ClientId(XtWindow(top_level))))
    {
-      for(i=0; i<children_num; i++)
-         AddWindow(children[i],False);
-      XFree(children);
+      /* if it is not our own window, unselect any events,
+         so that all_event_masks has only event bits of other apps. */
+      /* ...unless it is possible to select any events. */
+      XSelectInput(disp,w,0);
+   }
+
+   if(!XGetWindowAttributes(disp,w,&wa))
+   {
+      DelWindow(w);
+      return;
+   }
+
+   mask=wa.your_event_mask;
+
+   /* we want to be notified of subwindows creation/destruction etc */
+   mask|=SubstructureNotifyMask;
+
+   /* keep track of focus window */
+   mask|=FocusChangeMask;
+
+   /* we request events only if
+      1. the window owner has already requested this kind of events
+      2. the window is blocking the events from propagation
+      3. parent window belongs to a different client.
+   */
+   mask|=(wa.all_event_masks|wa.do_not_propagate_mask)
+         &(KeyPressMask|KeyReleaseMask|PointerMotionMask);
+
+   if(all_events_allowed)
+      mask|=(KeyPressMask|KeyReleaseMask|PointerMotionMask|PropertyChangeMask);
+
+   /* we always want both Press and Release events */
+   if(mask&(KeyPressMask|KeyReleaseMask))
+      mask|=(KeyPressMask|KeyReleaseMask);
+
+   if(!(mask&KeyPressMask))
+      DelWindow(w);  /* we'll check input mask later */
+
+   XSelectInput(disp,w,mask);
+
+   for(i=0; i<children_num; i++)
+   {
+      AddWindow(children[i],False,max_depth-1);
+      if(w==focus_window && window_is_top_level(children[i]))
+         last_top_level_focus_window=children[i];
+   }
+   XFree(children);
+
+   if(tmout)
+   {
+      XtAppAddTimeOut(app_context,AppData.recheckTime,AddWindowOnTimeout,
+                      (XtPointer)w);
    }
 }
 
@@ -913,14 +925,34 @@ void  CheckKeymap()
    first_time=0;
 }
 
+static void NewFocus(Window w)
+{
+   if(w==focus_window)
+      return;
+   if(top_level && w==XtWindow(top_level))
+   {
+      if(focus_window)
+         XSetInputFocus(disp,focus_window,RevertToNone,CurrentTime);
+      return;
+   }
+   if(window_is_top_level(w))
+   {
+      last_top_level_focus_window=w;
+      if(AppData.per_window_state)
+         SwitchKeyboardForWindow(w);
+   }
+   focus_window=w;
+   DelWindow(w);
+   AddWindow(w,False,1);
+}
+
 static void QueryFocus()
 {
    Window w=0;
-   int revert_to;
+   int revert_to=0;
    XGetInputFocus(disp,&w,&revert_to);
-   if(AppData.per_window_state)
-      SwitchKeyboardForWindow(w);
-   focus_window=w;
+   if(w)
+      NewFocus(w);
 }
 
 static
@@ -959,12 +991,12 @@ void  MainLoop(void)
       switch(ev.type)
       {
       case(MapNotify):
-         AddWindow(ev.xmap.window,True);
+         AddWindow(ev.xmap.window,True,1000000);
          QueryFocus();
          break;
       case(ReparentNotify):
          /* the structure could change under us - re-add the window */
-         AddWindow(ev.xreparent.window,True);
+         AddWindow(ev.xreparent.window,True,1000000);
          break;
       case(DestroyNotify):
          DelWindow(ev.xdestroywindow.window);
@@ -1037,17 +1069,15 @@ void  MainLoop(void)
          }
          break;
       case(FocusIn):
-         if(AppData.per_window_state)
-            SwitchKeyboardForWindow(ev.xfocus.window);
-         focus_window=ev.xfocus.window;
+         NewFocus(ev.xfocus.window);
          break;
       case(PropertyNotify):
          if(AppData.per_window_state && ev.xproperty.atom==XA_WM_NAME
          && ev.xproperty.state==PropertyNewValue)
          {
-            int mode=GetKbdState(ev.xproperty.window);
-            if(mode!=-1)
-               SetTitleIndicator(ev.xproperty.window,mode);
+            XtAppAddTimeOut(app_context,1000,
+                        (XtTimerCallbackProc)SetTitleIndicatorOnTimeout,
+                        (XtPointer)ev.xproperty.window);
          }
       }
    }
@@ -1288,6 +1318,8 @@ int   main(int argc,char **argv)
       fprintf(stderr,"%s: cannot open display\n",program);
       exit(1);
    }
+   client_id_mask=~(disp->resource_mask);
+
    if(argc>1 && argv[1][0]=='-')
    {
       fprintf(stderr,"%s: invalid option -- %s\n",program,argv[1]);
@@ -1308,10 +1340,10 @@ int   main(int argc,char **argv)
 
    old_error_handler=XSetErrorHandler(X_error_handler);
 
-   /* add all windows located on the display to the pool
-      and check for other xrus presence */
+   /* select events from all windows located on the display
+      and check for another xrus instance */
    for(scr=0; scr<ScreenCount(disp); scr++)
-      AddWindow(RootWindowOfScreen(ScreenOfDisplay(disp,scr)),True);
+      AddWindow(RootWindowOfScreen(ScreenOfDisplay(disp,scr)),True,1000000);
    xrus_check=0;
 
    StartArgs();
