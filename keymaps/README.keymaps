@@ -7,7 +7,9 @@ of time. This is probably because only few X11 programs call
 XtSetLanguageProc and setlocale.
 
 There are also jcuken-deru-* and yawerty-deru-* maps for german/russian
-keyboard layout created by tobi@bland.fido.de (Tobias Ernst).
+keyboard layout created by tobi@bland.fido.de (Tobias Ernst),
+and two hebrew keymaps (hebrew.xmm and hebrew-iso8.xmm) contributed
+by Vadim Smelyansky <jim@AFIK1.CO.IL>.
 
 About M4: I used this preprocessor to reduce duplication. That way, I
 have only 4 files with codings, 2 files with layouts and several
@@ -16,6 +18,7 @@ the generated keymaps are included in the distribution.
 
 Thanks to: Serge Vakulenko <vak@kiae.su> for original russian keymaps
 and Dima Antipov <dima@elvis.msk.su> for jcuken-cp1251 keymap,
-Tobias Ernst <tobi@bland.fido.de> for german/russian keymaps.
+Tobias Ernst <tobi@bland.fido.de> for german/russian keymaps,
+Vadim Smelyansky (AKA Proglot) <jim@AFIK1.CO.IL> for hebrew keymap.
 
    Alexander V. Lukyanov <lav@yars.free.net>

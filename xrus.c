@@ -402,12 +402,14 @@ static int GetKbdState(Window w)
    return -1;
 }
 
+static XtIntervalId SetTitleTimeout=-1;
 static void SetTitleIndicatorOnTimeout(XtPointer closure,XtIntervalId *id)
 {
    Window w=(Window)closure;
    int mode=GetKbdState(w);
    if(mode!=-1)
       SetTitleIndicator(w,mode);
+   SetTitleTimeout=-1;
 }
 
 static Bool window_is_top_level(Window w)
@@ -1138,7 +1140,9 @@ void  MainLoop(void)
          if(AppData.per_window_state && ev.xproperty.atom==XA_WM_NAME
          && ev.xproperty.state==PropertyNewValue)
          {
-            XtAppAddTimeOut(app_context,1000,
+            if(SetTitleTimeout!=-1)
+               XtRemoveTimeOut(SetTitleTimeout);
+            SetTitleTimeout=XtAppAddTimeOut(app_context,1000,
                         (XtTimerCallbackProc)SetTitleIndicatorOnTimeout,
                         (XtPointer)ev.xproperty.window);
          }

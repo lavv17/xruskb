@@ -90,10 +90,12 @@ EXTRA_DIST = INSTALL-koi8 INSTALL-english xrus.doc-koi8 xrus.doc-english  Xrus.a
 AUTOMAKE_OPTIONS = foreign
 
 DISTCLEANFILES = confpaths.h
+
+REL_DIR = /ftp/pub/software/unix/X11
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  xruskb.spec
+CONFIG_CLEAN_FILES = 
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -117,8 +119,7 @@ MANS = $(man_MANS)
 NROFF = nroff
 DIST_COMMON =  README ./stamp-h.in COPYING ChangeLog Makefile.am \
 Makefile.in NEWS TODO acconfig.h acinclude.m4 aclocal.m4 alloca.c \
-config.h.in configure configure.in install-sh missing mkinstalldirs \
-xruskb.spec.in
+config.h.in configure configure.in install-sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -175,8 +176,6 @@ distclean-hdr:
 	-rm -f config.h
 
 maintainer-clean-hdr:
-xruskb.spec: $(top_builddir)/config.status xruskb.spec.in
-	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-binPROGRAMS:
 
@@ -414,6 +413,7 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 
@@ -545,6 +545,34 @@ confpaths.h: Makefile
 	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >> $@
 
 xrus.o: confpaths.h
+
+dist-hook:
+	@echo $(PACKAGE).spec updating...
+	@rm -f $(distdir)/$(PACKAGE).spec
+	@sed "s/%define version .*/%define version $(VERSION)/" \
+	    $(srcdir)/$(PACKAGE).spec > $(distdir)/$(PACKAGE).spec && \
+	    cp $(distdir)/$(PACKAGE).spec $(srcdir)/$(PACKAGE).spec
+	@echo $(PACKAGE).lsm updating...
+	@rm -f $(distdir)/$(PACKAGE).lsm
+	@SIZE=`$(TAR) chof - $(distdir) | gzip $(GZIP_ENV) | wc -c`; SIZE=`expr \( $$SIZE + 512 \) / 1024`; echo Size: $$SIZE kB; \
+	 DATE=`date +%Y-%m-%d`; echo Date: $$DATE; \
+	 sed -e "s/Version:	.*/Version:	$(VERSION)/" \
+	     -e "s/[0-9]* kB $(PACKAGE)-[0-9.]*\.tar\.gz/$$SIZE kB $(PACKAGE)-$(VERSION).tar.gz/" \
+	     -e "s/Entered-date:	.*/Entered-date:	$$DATE/" \
+	    $(srcdir)/$(PACKAGE).lsm > $(distdir)/$(PACKAGE).lsm && \
+	    cp $(distdir)/$(PACKAGE).lsm $(srcdir)/$(PACKAGE).lsm
+release:
+	cvs commit -m $(VERSION)
+	make dist
+	cvs commit -m $(VERSION)
+	make distcheck
+	mv $(PACKAGE)-$(VERSION).tar.gz $(REL_DIR)
+	cp -p $(PACKAGE).lsm $(REL_DIR)/$(PACKAGE)-$(VERSION).lsm
+	cd $(REL_DIR) && \
+	    (addbz $(PACKAGE)-$(VERSION).tar.gz; \
+	    rm -f $(PACKAGE).tar.gz && ln -s $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz)
+	mutt -s add lsm@execpc.com < $(PACKAGE).lsm
+	cvs tag $(PACKAGE)-`echo $(VERSION) | sed 's/\./-/g'` .
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

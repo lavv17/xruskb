@@ -1,11 +1,14 @@
+%define version 1.14.0
+%define release 1
+
 Name: xruskb
 Summary: program for switching two keyboard layouts
-Version: 1.13.0
-Release: 1
+Version: %{version}
+Release: %{release}
 Copyright: GNU GPL
 Group: X11/Utilities
-Source: ftp://ftp.yars.free.net/pub/software/unix/X11/xruskb-1.13.0.tar.gz
-BuildRoot: /tmp/xruskb-1.13.0-root
+Source: ftp://ftp.yars.free.net/pub/software/unix/X11/xruskb-%{version}.tar.gz
+BuildRoot: /tmp/xruskb-%{version}-root
 
 %description
    Xrus - program for switching two keyboard layouts with a hot
@@ -23,7 +26,8 @@ passes, it starts a locker.
 %setup
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" LDFLAGS=-s ./configure --prefix=/usr
+%define __libtoolize true
+%configure
 make
 
 %install
@@ -33,11 +37,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%attr(755, root, root) /usr/bin/xrus
-%attr(755, root, root) /usr/bin/xrusmodmap
-%attr(644, root, man)  /usr/man/man1/xrus.1
-%attr(755, root, root) %dir /usr/share/xruskb
-%attr(644, root, root) /usr/share/xruskb/*
+%attr(755, root, root) %{_bindir}/*
+%attr(644, root, man)  %{_mandir}/man*/*
+%attr(755, root, root) %dir %{_datadir}/xruskb
+%attr(644, root, root) %{_datadir}/xruskb/*
 
 %attr(-, root, root) %doc README xrus.doc* NEWS TODO Xrus.ad Xrus.wmaker
 %attr(-, root, root) %doc keymaps/README.keymaps icons/README.icons

@@ -1,3 +1,9 @@
+Version 1.14.0 - 2001-03-16
+
+* Delay modification of window title with state indicator if the title
+  is changed often by its owner program. (-perwindow mode)
+* Add hebrew keymaps (contributed by Vadim Smelyansky <jim@AFIK1.CO.IL>)
+
 Version 1.13.0 - 2000-02-14
 
 * Switch focus back to an application when focus goes to xrus' window.
