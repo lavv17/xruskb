@@ -1,2 +1,3 @@
-   *  use arbitrary  key combinations  to  launch programs  (to
-quickly change key maps etc)
+   * use arbitrary key combinations to launch programs (to quickly change
+key maps etc)
+   * add configure option --with-toolkit=Xaw3d; search for Xaw3d.

@@ -1,4 +1,4 @@
-   Keyboard switch and indicator Xrus (Version 1.10.0)
+   Keyboard switch and indicator Xrus (Version 1.11.0)
    ===================================================
 
    Program description
@@ -47,7 +47,9 @@ setting X property `Xrus*xmodmap' to the name for that file.
 
    Xrus first looks  for the keymap in  current directory, then
 in $prefix/share/xruskb, then  appends .xmm and looks  again in
-the directory.
+the directory.  Therefore, it is  possible to specify  only key
+map name  if it  is installed in  proper directory,  e.g. `xrus
+jcuken-cyr'.
 
    The keyboard map should have four columns, the first two are
 usually  contain plain  latin  letters,  the two  next  contain
@@ -84,6 +86,8 @@ replace the file if you had an old version installed.
    *wMaker        boolean     false       -wmaker
    *wmIcon        boolean     false       -wmicon
    *xmodmapProgram string     BINDIR/xrusmodmap
+   *title0        string      xrus:LAT    none
+   *title1        string      xrus:RUS    none
 
    timeout is measured in minutes.
    The option  -bell turns  on the  bell when  switching, +bell
@@ -130,6 +134,15 @@ or call  menu, because window  managers usually trap  clicks to
 their icons.
    *xmodmapProgram specifies  program to  use for  keyboard map
 loading.
+   *title0 and *title1 set icon name for window manager in
+primary and secondary mode accordingly.
+
+   Besides xrus' own resources, there are a number of
+resources of standard widgets from Morif or Xaw libraries.
+In particular, using these resources it is possible to change
+mode indication or put an image instead of text strings (Motif
+only). See Xrus.ad for description of commonly used resources.
+All resources are documented in Motif or Xaw descriptions.
 
    Dynamic parameters change
    ~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,6 +9,7 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
 
 SHELL = @SHELL@
 
@@ -45,10 +46,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -57,8 +57,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-AMTAR = @AMTAR@
-AMTARFLAGS = @AMTARFLAGS@
 AWK = @AWK@
 CC = @CC@
 LN_S = @LN_S@
@@ -68,25 +66,21 @@ PACKAGE = @PACKAGE@
 TOOLKIT_INCLUDE = @TOOLKIT_INCLUDE@
 TOOLKIT_LIBS = @TOOLKIT_LIBS@
 VERSION = @VERSION@
-install_sh = @install_sh@
 
-
-pkgdata_DATA = DocumentL.xpm DocumentY.xpm rus.xpm usa.xpm\
- kbrus.xpm kbrus.tiff kbeng.xpm kbeng.tiff kbrus8.xpm kbeng8.xpm
+pkgdata_DATA = DocumentL.xpm DocumentY.xpm rus.xpm usa.xpm  kbrus.xpm kbrus.tiff kbeng.xpm kbeng.tiff kbrus8.xpm kbeng8.xpm
 
 EXTRA_DIST = $(pkgdata_DATA) README.icons *.xcf
-subdir = icons
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DIST_SOURCES = 
 DATA =  $(pkgdata_DATA)
 
-DIST_COMMON =  $(pkgdata_DATA) Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -102,18 +96,19 @@ install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
 	@list='$(pkgdata_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f; \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgdatadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgdatadir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdatadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdatadir)/$$p; \
+	  fi; fi; \
 	done
 
 uninstall-pkgdataDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(pkgdata_DATA)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(pkgdatadir)/$$f"; \
-	  rm -f $(DESTDIR)$(pkgdatadir)/$$f; \
+	list='$(pkgdata_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgdatadir)/$$p; \
 	done
 tags: TAGS
 TAGS:
@@ -121,11 +116,13 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
+subdir = icons
+
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -154,7 +151,7 @@ uninstall: uninstall-am
 all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(pkgdatadir)
 
@@ -189,8 +186,8 @@ maintainer-clean: maintainer-clean-am
 .PHONY: uninstall-pkgdataDATA install-pkgdataDATA tags distdir info-am \
 info dvi-am dvi check check-am installcheck-am installcheck \
 install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all install-strip \
-installdirs mostlyclean-generic distclean-generic clean-generic \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
