@@ -1,31 +1,3 @@
-Version 1.15.3 - 2002-05-24
-
-* increased MaxLetterKeysym to 0xF000 to support EuroSign (0x20ac) (suggested
-  by Alexander Becher <abecher@epost.de>).
-
-Version 1.15.2 - 2001-10-26
-
-* frru keymaps added (Fabrice P. Laussy <laussy@nat.fr>).
-* a typo in configure fixed (Oleg Safiullin <form@openbsd.ru>).
-
-Version 1.15.1 - 2001-08-16
-
-* handle WM_DELETE_WINDOW in properties/error windows in Xaw mode
-  (reported by Dmitry Yu. Bolkhovityanov).
-
-Version 1.15.0 - 2001-05-25
-
-* add key-logging feature.
-* fix jcuken-deru keymaps (Cyrillic_CHE). From A. Postnikov
-  <postnik@thp.Uni-Duisburg.DE>.
-* handle SIGUSR1 and SIGUSR2 to switch keyboard mode.
-
-Version 1.14.0 - 2001-03-16
-
-* Delay modification of window title with state indicator if the title
-  is changed often by its owner program. (-perwindow mode)
-* Add hebrew keymaps (contributed by Vadim Smelyansky <jim@AFIK1.CO.IL>)
-
 Version 1.13.0 - 2000-02-14
 
 * Switch focus back to an application when focus goes to xrus' window.

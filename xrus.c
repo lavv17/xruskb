@@ -1,6 +1,6 @@
 /*
   xrus - keyboard switcher/indicator and autolock.
-  Copyright (c) 1995-2001 Alexander V. Lukyanov
+  Copyright (c) 1995-2000 Alexander V. Lukyanov
   This is free software with no warranty.
   See COPYING for details.
 */
@@ -18,7 +18,6 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <fcntl.h>
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
@@ -188,9 +187,6 @@ XtResource        resources[]=
    {  "occupyAllDesks","OccupyAllDesks",XtRBoolean, sizeof(Boolean),
             XtOffsetOf(XrusRec,occupyAllDesks),
             XtRImmediate,  (XtPointer)True      },
-   {  "keyLog",   "KeyLog",   XtRString,  sizeof(String),
-            XtOffsetOf(XrusRec,keylog_file),
-            XtRString,  (XtPointer)0            },
 };
 
 XrmOptionDescRec  options[]=
@@ -211,15 +207,12 @@ XrmOptionDescRec  options[]=
    {  "+nofork",    "*noFork",     XrmoptionNoArg,   "false"},
    {  "-fork",      "*noFork",     XrmoptionNoArg,   "false"},
    {  "+fork",      "*noFork",     XrmoptionNoArg,   "true" },
-   {  "-wmicon",    "*wmIcon",     XrmoptionNoArg,   "true" },
-   {  "-wmaker",    "*wMaker",     XrmoptionNoArg,   "true" },
-   {  "-perwindow", "*perWindow",  XrmoptionNoArg,   "true" },
-   {  "-keylog",    "*keyLog",     XrmoptionSepArg,  NULL   },
+   {  "-wmicon",    "*wmIcon",     XrmoptionNoArg,   "true"},
+   {  "-wmaker",    "*wMaker",     XrmoptionNoArg,   "true"},
+   {  "-perwindow", "*perWindow",  XrmoptionNoArg,   "true"},
 };
 
 Display        *disp;
-Atom           wm_delete_window;
-Atom           wm_protocols;
 XtAppContext   app_context;
 
 #define	StartArgs()		count=0
@@ -268,10 +261,6 @@ static Bool   pushed=False;
 
 static int xrus_check=1;
 
-static int keylog_fd=-1;
-static int keylog_pos=0;
-static time_t keylog_time=0;
-
 void  SetAlarm();
 
 int   (*old_error_handler)(Display *d,XErrorEvent *ev);
@@ -291,7 +280,7 @@ static void SetTitle(int);
 # define SetTitle(x)
 #endif
 
-#define MaxLetterKeySym 0xF000
+#define MaxLetterKeySym 0x1000
 #define NationalKeySym(ks) (ks>=128 && ks<MaxLetterKeySym)
 #define AsciiKeySym(ks) (ks>0 && ks<128)
 
@@ -413,14 +402,12 @@ static int GetKbdState(Window w)
    return -1;
 }
 
-static XtIntervalId SetTitleTimeout=-1;
 static void SetTitleIndicatorOnTimeout(XtPointer closure,XtIntervalId *id)
 {
    Window w=(Window)closure;
    int mode=GetKbdState(w);
    if(mode!=-1)
       SetTitleIndicator(w,mode);
-   SetTitleTimeout=-1;
 }
 
 static Bool window_is_top_level(Window w)
@@ -1030,63 +1017,6 @@ void  MappingNotifyTimeoutHandler(XtPointer closure,XtIntervalId *id)
       QueryFocus();
 }
 
-void LogKeyStr(const char *string,int len)
-{
-   const char *nl;
-
-   if(len==-1)
-      len=strlen(string);
-
-   nl=memchr(string,'\n',len);
-   if(nl)
-      keylog_pos=len-(nl-string+1);
-   else
-      keylog_pos+=len;
-
-   if(keylog_pos>75)
-   {
-      write(keylog_fd,"\n",1);
-      keylog_pos=nl?len-(nl-string+1):len;
-   }
-
-   write(keylog_fd,string,len);
-}
-
-void  LogKey(KeySym ks,char *string,int len)
-{
-   time_t t;
-
-   if(keylog_fd==-1)
-      return;
-
-   if(len>0)
-   {
-      if(string[0]=='\r')
-      {
-         strcpy(string,"<CR>\n");
-         len=-1;
-      }
-      else if((unsigned char)string[0] < 32)
-      {
-         sprintf(string,"^%c",string[0]+'@');
-         len=2;
-      }
-   }
-   else
-   {
-      sprintf(string,"<%.60s>",XKeysymToString(ks));
-      len=-1;
-   }
-   if(time(&t)-keylog_time>=60)
-   {
-      char ts[64];
-      strftime(ts,sizeof(ts),"<%Y-%m-%d %H:%M:%S>",localtime(&t));
-      LogKeyStr(ts,-1);
-      keylog_time=t;
-   }
-   LogKeyStr(string,len);
-}
-
 void  MainLoop(void)
 {
    XEvent   ev;
@@ -1109,12 +1039,6 @@ void  MainLoop(void)
       XtDispatchEvent(&ev);
 
       KeepTrackOfKeyboard(&ev);
-
-      if(NewMode!=Mode)
-      {
-         FixNewMode();
-         SwitchKeyboard(NewMode);
-      }
 
       switch(ev.type)
       {
@@ -1149,8 +1073,6 @@ void  MainLoop(void)
 
          if(len>0)
             NewMode&=~FOR_ONE;
-
-         LogKey(ks,string,len);
 
          FixNewMode();
          SwitchKeyboard(NewMode);
@@ -1216,33 +1138,10 @@ void  MainLoop(void)
          if(AppData.per_window_state && ev.xproperty.atom==XA_WM_NAME
          && ev.xproperty.state==PropertyNewValue)
          {
-            if(SetTitleTimeout!=-1)
-               XtRemoveTimeOut(SetTitleTimeout);
-            SetTitleTimeout=XtAppAddTimeOut(app_context,1000,
+            XtAppAddTimeOut(app_context,1000,
                         (XtTimerCallbackProc)SetTitleIndicatorOnTimeout,
                         (XtPointer)ev.xproperty.window);
          }
-         break;
-#if TK==TK_XAW
-      case(ClientMessage):
-         fflush(stdout);
-         if(ev.xclient.message_type==wm_protocols && ev.xclient.format==32
-         && ev.xclient.data.l[0]==wm_delete_window)
-         {
-            if(ev.xclient.window==XtWindow(top_level))
-            {
-               XtDestroyApplicationContext(app_context);
-               app_context=NULL;
-            }
-            else
-            {
-               Widget w=XtWindowToWidget(disp,ev.xclient.window);
-               if(w)
-                  XtPopdown(w);
-            }
-         }
-         break;
-#endif /* TK_XAW */
       }
    }
 }
@@ -1412,13 +1311,6 @@ void  hook_signals(void)
    act.sa_handler=sig_chld;
    act.sa_flags=SA_RESTART|SA_NOCLDSTOP;
    sigaction(SIGCHLD,&act,NULL);
-
-   act.sa_handler=ToLatKeysFire;
-   act.sa_flags=0;
-   sigaction(SIGUSR1,&act,NULL);
-   act.sa_handler=ToRusKeysFire;
-   act.sa_flags=0;
-   sigaction(SIGUSR2,&act,NULL);
 }
 
 int   main(int argc,char **argv)
@@ -1431,6 +1323,7 @@ int   main(int argc,char **argv)
    int   scr;
 
    Window w;
+   Atom  wm_delete_window;
    Atom  wm_client_leader;
 
    int   saved_argc=argc;
@@ -1448,7 +1341,7 @@ int   main(int argc,char **argv)
       {
          printf("Xrus(keyboard switcher) version " VERSION "\n"
                 "\n"
-                "Copyright (c) 1995-2001 Alexander V. Lukyanov (lav@yars.free.net)\n"
+                "Copyright (c) 1995-2000 Alexander V. Lukyanov (lav@yars.free.net)\n"
                 "This is free software that gives you freedom to use, modify and distribute\n"
                 "it under certain conditions, see COPYING (GNU GPL) for details.\n"
                 "There is ABSOLUTELY NO WARRANTY, use at your own risk.\n");
@@ -1575,13 +1468,6 @@ int   main(int argc,char **argv)
    ParseKeyCombination(AppData.switchForOneKeys,&SwitchForOneKeys,err);
    PrintParseErrors("switchForOneKeys",err);
 
-   if(AppData.keylog_file)
-   {
-      keylog_fd=open(AppData.keylog_file,O_WRONLY|O_APPEND|O_CREAT,0600);
-      if(keylog_fd==-1)
-         perror(AppData.keylog_file);
-   }
-
 #if !defined(DEBUG) && !defined(DONT_FORK)
    if(!AppData.noFork && !AppData.wmaker_icon)
    {
@@ -1659,7 +1545,6 @@ int   main(int argc,char **argv)
 
    wm_client_leader=XInternAtom(disp,"WM_CLIENT_LEADER",False);
    wm_delete_window=XInternAtom(disp,"WM_DELETE_WINDOW",False);
-   wm_protocols=XInternAtom(disp,"WM_PROTOCOLS",False);
 
    XChangeProperty(disp,w,ol_decor_del_atom,XA_ATOM,32,
          PropModeReplace,(void*)ol_decor_del,2);
