@@ -35,6 +35,8 @@ typedef struct
    Boolean  wm_icon;
    Boolean  wmaker_icon;
    String   xmodmap_program;
+   String   title0;
+   String   title1;
 } XrusRec;
 
 extern   XrusRec  AppData;
