@@ -27,5 +27,5 @@ A: If you have recent version of XFree86 and have proper localization
 
 Q: Why xrus is needed when there is XKB extension?
 A: First, there are X11R5 servers, which don't have XKB extension. Second,
-   xrus has few unique features, like per-window keyboard mode. Third,
-   xrus works fine for many people and it is easy to set up.
+   xrus works fine for many people and it is easy to set up, and it does
+   not conflict with XKB.
