@@ -1,0 +1,49 @@
+! Table for xrus to be used over a French modmap 
+! Created by Fabrice P. Laussy <laussy@nat.fr>
+
+keysym asciicircum = asciicircum diaeresis asciicircum diaeresis        Cyrillic_ha     Cyrillic_HA     Cyrillic_ha     Cyrillic_HA
+keysym dollar = dollar sterling currency cent                           Cyrillic_hardsign Cyrillic_HARDSIGN Cyrillic_hardsign Cyrillic_HARDSIGN
+keysym ugrave = ugrave percent Ugrave Ugrave                            Cyrillic_e      Cyrillic_E      Cyrillic_e      Cyrillic_E
+keysym comma = comma question questiondown ordfeminine                  Cyrillic_softsign       Cyrillic_SOFTSIGN       Cyrillic_softsign       Cyrillic_SOFTSIGN
+keysym semicolon = semicolon period periodcentered masculine            Cyrillic_be     Cyrillic_BE     Cyrillic_be     Cyrillic_BE
+keysym colon = colon slash multiply division                            Cyrillic_yu     Cyrillic_YU     Cyrillic_yu     Cyrillic_YU
+
+keysym twosuperior = twosuperior threesuperior onesuperior onehalf      Cyrillic_io     Cyrillic_IO     Cyrillic_io     Cyrillic_IO
+keysym ampersand   = ampersand 1 onequarter threequarters               1       ampersand       1       ampersand
+keysym eacute      = eacute 2 asciitilde Eacute                         2       quotedbl        2       quotedbl
+keysym quotedbl    = quotedbl 3 numbersign numbersign                   3       numbersign      3       numbersign
+keysym apostrophe  = apostrophe 4 braceleft acute                       4       semicolon       4       semicolon
+keysym parenleft   = parenleft 5 bracketleft bracketleft                5       colon           5       colon
+keysym minus       = minus 6 bar macron                                 6       comma           6       comma
+keysym egrave      = egrave 7 dead_grave Egrave                         7       period          7       period
+keysym underscore  = underscore 8 backslash hyphen                      8       percent         8       percent
+keysym ccedilla    = ccedilla 9 asciicircum Ccedilla                    9       parenleft       9       parenleft
+keysym agrave      = agrave 0 at Agrave                                 0       parenright      0       parenright
+keysym parenright  = parenright degree bracketright brokenbar           bar     underscore      bar     underscore
+
+keysym a = a A  acircumflex     adiaeresis      Cyrillic_shorti Cyrillic_SHORTI Cyrillic_shorti   Cyrillic_SHORTI
+keysym z = z Z  ae              AE              Cyrillic_tse    Cyrillic_TSE    Cyrillic_tse      Cyrillic_TSE
+keysym e = e E  ecircumflex     ediaeresis      Cyrillic_u      Cyrillic_U      Cyrillic_u        Cyrillic_U
+keysym r = r R  copyright       copyright       Cyrillic_ka     Cyrillic_KA     Cyrillic_ka       Cyrillic_KA
+keysym t = t T  thorn           THORN           Cyrillic_ie     Cyrillic_IE     Cyrillic_ie       Cyrillic_IE
+keysym y = y Y  yacute          Yacute          Cyrillic_en     Cyrillic_EN     Cyrillic_en       Cyrillic_EN
+keysym u = u U  ucircumflex     udiaeresis      Cyrillic_ghe    Cyrillic_GHE    Cyrillic_ghe      Cyrillic_GHE
+keysym i = i I  icircumflex     idiaeresis      Cyrillic_sha    Cyrillic_SHA    Cyrillic_sha      Cyrillic_SHA
+keysym o = o O  ocircumflex     odiaeresis      Cyrillic_shcha  Cyrillic_SHCHA  Cyrillic_shcha    Cyrillic_SHCHA
+keysym p = p P  paragraph       grave           Cyrillic_ze     Cyrillic_ZE     Cyrillic_ze       Cyrillic_ZE
+keysym q = q Q  Acircumflex     Adiaeresis      Cyrillic_ef     Cyrillic_EF     Cyrillic_ef       Cyrillic_EF
+keysym s = s S  oslash          Ooblique        Cyrillic_yeru   Cyrillic_YERU   Cyrillic_yeru     Cyrillic_YERU
+keysym d = d D  Ecircumflex     Ediaeresis      Cyrillic_ve     Cyrillic_VE     Cyrillic_ve       Cyrillic_VE
+keysym f = f F  plusminus       ordfeminine     Cyrillic_a      Cyrillic_A      Cyrillic_a        Cyrillic_A
+keysym g = g G  g               G               Cyrillic_pe     Cyrillic_PE     Cyrillic_pe       Cyrillic_PE
+keysym h = h H  eth             ETH             Cyrillic_er     Cyrillic_ER     Cyrillic_er       Cyrillic_ER
+keysym j = j J  Ucircumflex     Udiaeresis      Cyrillic_o      Cyrillic_O      Cyrillic_o        Cyrillic_O
+keysym k = k K  Icircumflex     Idiaeresis      Cyrillic_el     Cyrillic_EL     Cyrillic_el       Cyrillic_EL
+keysym l = l L  Ocircumflex     Odiaeresis      Cyrillic_de     Cyrillic_DE     Cyrillic_de       Cyrillic_DE
+keysym m = m M  onesuperior     masculine       Cyrillic_zhe    Cyrillic_ZHE    Cyrillic_zhe      Cyrillic_ZHE
+keysym w = w W  guillemotleft   guillemotleft   Cyrillic_ya     Cyrillic_YA     Cyrillic_ya       Cyrillic_YA
+keysym x = x X  guillemotright  guillemotright  Cyrillic_che    Cyrillic_CHE    Cyrillic_che      Cyrillic_CHE
+keysym c = c C  ccedilla        Ccedilla        Cyrillic_es     Cyrillic_ES     Cyrillic_es       Cyrillic_ES
+keysym v = v V  registered      registered      Cyrillic_em     Cyrillic_EM     Cyrillic_em       Cyrillic_EM
+keysym b = b B  ssharp          ssharp          Cyrillic_i      Cyrillic_I      Cyrillic_i        Cyrillic_I
+keysym n = n N  notsign         notsign         Cyrillic_te     Cyrillic_TE     Cyrillic_te       Cyrillic_TE
