@@ -1,3 +1,13 @@
+Version 1.10.1
+
+* added resources title0 and title1. They are displayed as icon title in
+  different modes (handy for icewm, see also -wmicon option).
+* added german/russian keyboard maps: jcuken-deru-* and yawerty-deru-*.
+  (by Tobias Ernst).
+* alwaysMapped is now False by default since it caused problems with
+  icewm.
+* fixed Xaw detection if it requires -lXext.
+
 Version 1.10.0
 
 * support for 8 column key maps added (by Tobias Ernst). This can be useful

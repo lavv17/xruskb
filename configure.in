@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(xrus.c)
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(xruskb, 1.10.0)
+AM_INIT_AUTOMAKE(xruskb, 1.10.1)
 
 if test "$CFLAGS" = ""
 then
@@ -67,7 +67,7 @@ AC_DEFUN(XRUS_CHECK_XAW,
    AC_CHECK_LIB(Xaw,main,[
 	TOOLKIT_LIBS="-lXaw"
 	AC_DEFINE(HAVE_LIBXAW)
-	],[],[-lXt -lXmu -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
+	],[],[-lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
 ])
 
 
