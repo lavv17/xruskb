@@ -1,13 +1,3 @@
-Version 1.15.3 - 2002-05-24
-
-* increased MaxLetterKeysym to 0xF000 to support EuroSign (0x20ac) (suggested
-  by Alexander Becher <abecher@epost.de>).
-
-Version 1.15.2 - 2001-10-26
-
-* frru keymaps added (Fabrice P. Laussy <laussy@nat.fr>).
-* a typo in configure fixed (Oleg Safiullin <form@openbsd.ru>).
-
 Version 1.15.1 - 2001-08-16
 
 * handle WM_DELETE_WINDOW in properties/error windows in Xaw mode
