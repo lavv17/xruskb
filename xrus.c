@@ -249,14 +249,14 @@ int   format_ret;
 unsigned long nitems_ret,bytes_after_ret;
 unsigned char *prop;
 
-Atom kbd_state_atom;
-Window focus_window;
-int    revert_to=RevertToNone;
-Window last_top_level_focus_window;
-int    last_top_level_revert_to=RevertToNone;
-Bool   pushed=False;
+static Atom kbd_state_atom;
+static Window focus_window;
+static int    revert_to=RevertToNone;
+static Window last_top_level_focus_window;
+static int    last_top_level_revert_to=RevertToNone;
+static Bool   pushed=False;
 
-int   xrus_check=1;
+static int xrus_check=1;
 
 void  SetAlarm();
 
@@ -266,14 +266,15 @@ pid_t LockerRunning=0;
 
 time_t alarm_expected;
 
-int   MappingNotifyIgnoreCount=0;
-XtIntervalId   MappingNotifyTimeout=-1;
-XtIntervalId   raise_tmout=-1;
+static int MappingNotifyIgnoreCount=0;
+static XtIntervalId MappingNotifyTimeout=-1;
 
 #if TK!=TK_NONE
-static void  ShowSwitchButton(void);
+static void ShowSwitchButton(void);
+static void SetTitle(int);
 #else
 # define ShowSwitchButton()
+# define SetTitle(x)
 #endif
 
 #define MaxLetterKeySym 0x1000
@@ -552,9 +553,12 @@ void  SwitchKeyboard(int to)
 static void SwitchKeyboardForWindow(Window w)
 {
    int mode;
-   focus_window=0;
+   Window old_last_top_level_focus_window=last_top_level_focus_window;
+   Window old_focus_window=focus_window;
    if(w==0)
       return;
+   focus_window=0;
+   last_top_level_focus_window=0;
    mode=GetKbdState(w);
    if(mode==-1)
       mode=0;
@@ -566,6 +570,9 @@ static void SwitchKeyboardForWindow(Window w)
 
    if(prop)
       XFree(prop);
+
+   focus_window=old_focus_window;
+   last_top_level_focus_window=old_last_top_level_focus_window;
 }
 static void InitCapsLockEmu()
 {
@@ -612,6 +619,7 @@ static void RaiseButton()
    XRaiseWindow(disp,XtWindow(top_level));
 }
 
+static XtIntervalId raise_tmout=-1;
 static void RaiseButtonOnTimeout(XtPointer closure,XtIntervalId *id)
 {
    (void)closure; (void)id;
@@ -689,6 +697,24 @@ void  VisibilityChange(Widget w,XtPointer closure,XEvent *ev,Boolean *cont)
       raise_tmout=XtAppAddTimeOut(app_context,1000,
                         (XtTimerCallbackProc)RaiseButtonOnTimeout,NULL);
    }
+}
+
+XtIntervalId pushed_tmout=-1;
+static void drop_pushed()
+{
+   pushed_tmout=-1;
+   pushed=False;
+}
+static void PerformSwitch(void)
+{
+   NewMode=(Mode^MODE)&~FOR_ONE;
+   FixNewMode();
+   SwitchKeyboard(NewMode);
+   pushed=True;
+   if(pushed_tmout!=-1)
+      XtRemoveTimeOut(pushed_tmout);
+   pushed_tmout=XtAppAddTimeOut(app_context,2000,
+                        (XtTimerCallbackProc)drop_pushed,NULL);
 }
 #endif /* TK!=TK_NONE */
 
@@ -976,24 +1002,6 @@ static void QueryFocus()
    XGetInputFocus(disp,&w,&revert_to);
    if(w)
       NewFocus(w,revert_to);
-}
-
-XtIntervalId pushed_tmout=-1;
-static void drop_pushed()
-{
-   pushed_tmout=-1;
-   pushed=False;
-}
-static void PerformSwitch(void)
-{
-   NewMode=(Mode^MODE)&~FOR_ONE;
-   FixNewMode();
-   SwitchKeyboard(NewMode);
-   pushed=True;
-   if(pushed_tmout!=-1)
-      XtRemoveTimeOut(pushed_tmout);
-   pushed_tmout=XtAppAddTimeOut(app_context,2000,
-                        (XtTimerCallbackProc)drop_pushed,NULL);
 }
 
 static
@@ -1477,7 +1485,7 @@ int   main(int argc,char **argv)
 #if TK!=TK_NONE
    XtAddEventHandler(top_level,StructureNotifyMask,False,UnmapHandler,NULL);
 
-#if TK==TK_MOTIF
+# if TK==TK_MOTIF
    StartArgs();
    AddArg(XmNresizable,False);
    form_w=XtCreateManagedWidget("form",xmFormWidgetClass,top_level,args,count);
@@ -1487,7 +1495,7 @@ int   main(int argc,char **argv)
 
    XtAddCallback(switch_button[0],XmNactivateCallback,(XtCallbackProc)PerformSwitch,NULL);
    XtAddCallback(switch_button[1],XmNactivateCallback,(XtCallbackProc)PerformSwitch,NULL);
-#else
+# elif TK==TK_XAW
    form_w=XtCreateManagedWidget("form",boxWidgetClass,top_level,NULL,0);
 
    switch_button[0]=XtCreateWidget("modeButton0",commandWidgetClass,form_w,NULL,0);
@@ -1495,7 +1503,9 @@ int   main(int argc,char **argv)
 
    XtAddCallback(switch_button[0],XtNcallback,(XtCallbackProc)PerformSwitch,NULL);
    XtAddCallback(switch_button[1],XtNcallback,(XtCallbackProc)PerformSwitch,NULL);
-#endif
+# else
+#  error unknown toolkit
+# endif
 
    XtManageChild(switch_button[(Mode&MODE)==RUS]);
 
@@ -1503,7 +1513,7 @@ int   main(int argc,char **argv)
    XtAddEventHandler(switch_button[1],VisibilityChangeMask,False,VisibilityChange,NULL);
 
    XrusMenuCreate();
-#endif
+#endif /* !TK_NONE */
 
    ol_decor_del_atom=XInternAtom(disp,"_OL_DECOR_DEL",False);
    ol_decor_del[0]=XInternAtom(disp,"_OL_DECOR_HEADER",False);
@@ -1523,11 +1533,20 @@ int   main(int argc,char **argv)
    XChangeProperty(disp,XtWindow(top_level),wm_client_leader,XA_WINDOW,32,
          PropModeReplace,(void*)&w,1);
 
-   {  /* make the window transient */
-      Atom win_state=XInternAtom(disp,"_WIN_STATE",False);
+   {  /* make the window global for all desktops */
+      Atom win_state,sgi_desks_hints,sgi_desks_always_global;
+      long value;
+      /* for gnome */
       static long state[2]={1,63};
+      win_state=XInternAtom(disp,"_WIN_STATE",False);
       XChangeProperty(disp,XtWindow(top_level),win_state,XA_CARDINAL,32,
          PropModeReplace,(void*)state,2);
+      /* for SGI */
+      sgi_desks_hints=XInternAtom(disp,"_SGI_DESKS_HINTS",False);
+      sgi_desks_always_global=XInternAtom(disp,"_SGI_DESKS_ALWAYS_GLOBAL",False);
+      value=sgi_desks_always_global;
+      XChangeProperty(disp,XtWindow(top_level),sgi_desks_hints,XA_ATOM,32,
+         PropModeReplace,(void*)&value,1);
    }
 #if TK!=TK_MOTIF && TK!=TK_NONE
 {
