@@ -14,5 +14,5 @@ A: There can be several reasons. If you use *-cyr key map, then it is
       ru_RU.koi8r    ru_RU.KOI8-R
 
    If you use *-koi8 key maps (or different encoding), then sometimes it is
-   importand not to have a localization. It is a hack method anyway. See also
+   important not to have a localization. It is a hack method anyway. See also
    Cyrillic-HOWTO on how to tune bash.
