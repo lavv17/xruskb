@@ -169,7 +169,7 @@ void  PropsSet()
 static
 void  ErrorDismiss_CB(Widget w,XtPointer closure,XtPointer call_data)
 {
-   XtDestroyWidget(w);
+   XtDestroyWidget((Widget)closure);
 }
 
 static
@@ -242,7 +242,7 @@ int  PropsApply()
       error=XmCreateErrorDialog(props.shell,"error",arg,3);
       XtUnmanageChild(XtNameToWidget(error,"Cancel"));
       XtUnmanageChild(XtNameToWidget(error,"Help"));
-      XtAddCallback(error,XmNunmapCallback,ErrorDismiss_CB,0);
+      XtAddCallback(error,XmNunmapCallback,ErrorDismiss_CB,(XtPointer)error);
 
       XmStringFree(msg);
       XmStringFree(title);
