@@ -1,3 +1,6 @@
+* per-window keyboard state (-perwindow option and *perWindow resource)
+* memory leak in window_is_top_level fixed.
+
 Version 1.11.0 - 2000-01-19
 
 * added resources title0 and title1. They are displayed as icon title in
