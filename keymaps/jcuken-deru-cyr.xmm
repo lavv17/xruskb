@@ -113,7 +113,7 @@ keycode 0x32 =	Shift_L
 ! This key is only present on German keyboards, not on English ones. 
 keycode 0x5E =	less		greater 	bar		brokenbar	less greater	bar	brokenbar
 keycode 0x34 =	y		Y						Cyrillic_ya	Cyrillic_YA
-keycode 0x35 =	x		X						Cyrillic_che 	Cyrillic_che
+keycode 0x35 =	x		X						Cyrillic_che 	Cyrillic_CHE
 keycode 0x36 =	c		C						Cyrillic_es	Cyrillic_ES
 keycode 0x37 =	v		V						Cyrillic_em	Cyrillic_EM
 keycode 0x38 =	b		B						Cyrillic_i	Cyrillic_I
