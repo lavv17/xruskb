@@ -94,6 +94,7 @@ replace the file if you had an old version installed.
    *titlePerWindow0 string    (LAT)       none
    *titlePerWindow1 string    (RUS)       none
    *occupyAllDesks boolean    true        none
+   *keyLog        string      ""          -keylog
 
    timeout is measured in minutes.
    The option  -bell turns  on the  bell when  switching, +bell
@@ -148,6 +149,7 @@ window and changing it on focus change.
 appended to each window title in per-window mode.
    *occupyAllDesks makes  xrus to make  icon sticky.  Works for
 some window manager only.
+   -keylog specifies file name for key press logging.
 
    Besides xrus' own resources, there are a number of resources
 of standard widgets from Morif or Xaw libraries. In particular,

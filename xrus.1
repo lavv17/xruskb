@@ -80,6 +80,9 @@ usually trap clicks to their icons.
 .B -perwindow
 Remember keyboard state for each top level window and switch
 keyboard on focus change.
+.TP
+.B -keylog
+Log all key presses to specified file.
 
 .SH RESOURCES
 Here are described only Xrus' own resources, to change resources of
@@ -196,6 +199,20 @@ Set icon name for window manager in primary and secondary mode accordingly.
 .BR *titlePerWindow0 " and " *titlePerWindow1
 (type string; default (LAT) and (RUS))
 Append these strings to window title in per-window mode.
+.TP
+.B *keyLog
+(type string; no default) Same as -keylog option.
+
+.SH SIGNALS
+.TP
+.B SIGTERM
+switch to primary keyboard mode and terminate.
+.TP
+.B SIGUSR1
+switch to primary keyboard mode.
+.TP
+.B SIGUSR2
+switch to secondary keyboard mode.
 
 .SH AUTHOR
 \fBxrus\fP was written by Alexander V. Lukyanov <lav@yars.free.net>.

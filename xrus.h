@@ -41,6 +41,7 @@ typedef struct
    String   titlePerWindow0;
    String   titlePerWindow1;
    Boolean  occupyAllDesks;
+   String   keylog_file;
 } XrusRec;
 
 extern   XrusRec  AppData;
