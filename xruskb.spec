@@ -1,11 +1,11 @@
 Name: xruskb
 Summary: program for switching two keyboard layouts
-Version: 1.11.0
+Version: 1.12.0
 Release: 1
 Copyright: GNU GPL
 Group: X11/Utilities
-Source: ftp://ftp.yars.free.net/pub/software/unix/X11/xruskb-1.11.0.tar.gz
-BuildRoot: /tmp/xruskb-1.11.0-root
+Source: ftp://ftp.yars.free.net/pub/software/unix/X11/xruskb-1.12.0.tar.gz
+BuildRoot: /tmp/xruskb-1.12.0-root
 
 %description
    Xrus - program for switching two keyboard layouts with a hot

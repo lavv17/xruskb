@@ -76,6 +76,10 @@ Display state in Window Maker appicon.
 Display state in window manager's icon for xrus. In this case you won't be
 able to click on xrus' icon to switch or call menu, because window managers
 usually trap clicks to their icons.
+.TP
+.B -perwindow
+Remember keyboard state for each top level window and switch
+keyboard on focus change.
 
 .SH RESOURCES
 Here are described only Xrus' own resources, to change resources of
@@ -185,6 +189,13 @@ program for keyboard map loading.
 .BR *title0 " and " *title1
 (type string; default Xrus:LAT and Xrus:RUS)
 Set icon name for window manager in primary and secondary mode accordingly.
+.TP
+.B *perWindow
+(type bool; default false) Same as -perwindow option.
+.TP
+.BR *titlePerWindow0 " and " *titlePerWindow1
+(type string; default (LAT) and (RUS))
+Append these strings to window title in per-window mode.
 
 .SH AUTHOR
 \fBxrus\fP was written by Alexander V. Lukyanov <lav@yars.free.net>.

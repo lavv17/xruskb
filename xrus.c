@@ -334,7 +334,8 @@ static void SaveModeForWindow()
    long m=Mode&SAVE_MASK;
    if(focus_window==0 || !AppData.per_window_state)
       return;
-   if(AppData.titlePerWindow0 && AppData.titlePerWindow1)
+   if( AppData.titlePerWindow0    && AppData.titlePerWindow1
+   && (AppData.titlePerWindow0[0] || AppData.titlePerWindow1[0]))
    {
       prop=0;
       if(XGetWindowProperty(disp,focus_window,XA_WM_NAME,0L,256L,0,XA_STRING,

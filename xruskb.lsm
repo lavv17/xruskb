@@ -1,7 +1,7 @@
 Begin3
 Title:		Xruskb - X keyboard switcher/autolock
-Version:	1.11.0
-Entered-date:	2000-01-19
+Version:	1.12.0
+Entered-date:	2000-02-02
 Description:	Xruskb allows switching of two keyboard layouts
 		on any particular key combination, e.g. two shifts.
 		It maintains a small window with current state indicator.
@@ -14,7 +14,7 @@ Keywords:	X11, keyboard, national
 Author:		lav@yars.free.net (Alexander V. Lukyanov)
 Maintained-by:	lav@yars.free.net (Alexander V. Lukyanov)
 Primary-site:	ftp.yars.free.net /pub/software/unix/X11
-		139 kB xruskb-1.11.0.tar.gz
+		141 kB xruskb-1.12.0.tar.gz
 Alternate-site:	ftp.relcom.ru /pub/x11/cyrillic
 Alternate-site:	metalab.unc.edu /pub/Linux/X11/xutils
 Platforms:	Unix, X11, Motif or Xaw or Lesstif
