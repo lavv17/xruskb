@@ -1,3 +1,10 @@
+Version 1.15.0 - 2001-05-25
+
+* add key-logging feature.
+* fix jcuken-deru keymaps (Cyrillic_CHE). From A. Postnikov
+  <postnik@thp.Uni-Duisburg.DE>.
+* handle SIGUSR1 and SIGUSR2 to switch keyboard mode.
+
 Version 1.14.0 - 2001-03-16
 
 * Delay modification of window title with state indicator if the title
