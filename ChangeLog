@@ -1,3 +1,18 @@
+2000-02-14  lav
+
+	* xrus.c: handle FocusOut; add more window properties for gnome.
+
+2000-02-11  lav
+
+	* xrus.c: revert focus to last top level window when focus goes
+	  to xrus; add _WIN_STATE; don't select all events from top windows
+          of clients; add _SGI_DESKS_HINTS; add KDE_WIN_STICKY;
+          add occupyAllDesks resource.
+        * xrus.h: add occupyAllDesks resource.
+        * configure.in: check for Xaw3d
+
+*** missed some records.
+
 2000-01-14  lav
 
 	* Xrus.ad: add title0 and title1 resources.
@@ -5,5 +20,5 @@
 	  with icewm; title0/title1 new resources; SetTitle new function;
 	  don't raise icon if it is in window manager's icon; call SetTitle
 	  on switching and initially.
-	
+
 2000-01-14  ChangeLog started.

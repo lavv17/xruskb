@@ -83,11 +83,18 @@
 *altMaps: jcuken-cyr jcuken-koi8 jcuken-cp1251 \
           yawerty-cyr yawerty-koi8 yawerty-cp1251
 *altmap0.labelString: jcuken
-*altmap1.labelString: jcuken koi-8      (hack)
-*altmap2.labelString: jcuken cp1251   (hack)
+*altmap1.labelString: jcuken koi-8      (no locale)
+*altmap2.labelString: jcuken cp1251   (no locale)
 *altmap3.labelString: yawerty
-*altmap4.labelString: yawerty koi-8    (hack)
-*altmap5.labelString: yawerty cp1251 (hack)
+*altmap4.labelString: yawerty koi-8    (no locale)
+*altmap5.labelString: yawerty cp1251 (no locale)
+! same for Xaw.
+*altmap0.label: jcuken
+*altmap1.label: jcuken koi-8      (no locale)
+*altmap2.label: jcuken cp1251   (no locale)
+*altmap3.label: yawerty
+*altmap4.label: yawerty koi-8    (no locale)
+*altmap5.label: yawerty cp1251 (no locale)
 !...
 !*altmapN.labelString: N'th map
 
@@ -107,6 +114,9 @@
 !*recheckTime: 1500
 
 !*xmodmapProgram: xrusmodmap
+
+! Try to occupy all desktops. Works for some WM's only.
+!*occupyAllDesks: True
 
 *modeButton0.translations: #override <Btn3Down>: XrusMenuPopup()
 *modeButton1.translations: #override <Btn3Down>: XrusMenuPopup()

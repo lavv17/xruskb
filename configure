@@ -707,7 +707,7 @@ fi
 
 PACKAGE=xruskb
 
-VERSION=1.12.2
+VERSION=1.13.0
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -2751,14 +2751,14 @@ esac
 if test x$with_Xaw = xyes
 then
    
-   echo $ac_n "checking for main in -lXaw""... $ac_c" 1>&6
-echo "configure:2756: checking for main in -lXaw" >&5
-ac_lib_var=`echo Xaw'_'main | sed 'y%./+-:%__p__%'`
+   echo $ac_n "checking for main in -lXaw3d""... $ac_c" 1>&6
+echo "configure:2756: checking for main in -lXaw3d" >&5
+ac_lib_var=`echo Xaw3d'_'main | sed 'y%./+-:%__p__%'`
 if eval "test \"\${ac_cv_lib_$ac_lib_var+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lXaw -lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
+LIBS="-lXaw3d -lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 2764 "configure"
 #include "confdefs.h"
@@ -2768,6 +2768,51 @@ main()
 ; return 0; }
 EOF
 if { (eval echo configure:2771: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  
+	TOOLKIT_LIBS="-lXaw3d"
+	cat >> confdefs.h <<\EOF
+#define HAVE_LIBXAW 1
+EOF
+
+	
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
+   if test -z "TOOLKIT_LIBS"; then
+      
+   echo $ac_n "checking for main in -lXaw""... $ac_c" 1>&6
+echo "configure:2801: checking for main in -lXaw" >&5
+ac_lib_var=`echo Xaw'_'main | sed 'y%./+-:%__p__%'`
+if eval "test \"\${ac_cv_lib_$ac_lib_var+set}\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lXaw -lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 2809 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+EOF
+if { (eval echo configure:2816: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -2794,10 +2839,12 @@ else
 fi
 
 
+   fi
 fi
 
 # if we don't use Xaw directly, test for Motif
-if test x$ac_cv_lib_Xaw_main != xyes -o x$with_Xaw != xyes
+if test x$ac_cv_lib_Xaw_main != xyes -a x$ac_cv_lib_Xaw3d_main != xyes \
+   || test x$with_Xaw != xyes
 then
 
 if test "$with_motif" != no; then
@@ -2806,7 +2853,7 @@ motif_includes=NONE
 motif_libraries=NONE
 
 echo $ac_n "checking for Motif""... $ac_c" 1>&6
-echo "configure:2810: checking for Motif" >&5
+echo "configure:2857: checking for Motif" >&5
 if test "x$with_motif" = xno; then
   no_motif=yes
 else
@@ -2949,7 +2996,7 @@ EOF
 
    # motif can require additional libs
    echo $ac_n "checking for regex in -lgen""... $ac_c" 1>&6
-echo "configure:2953: checking for regex in -lgen" >&5
+echo "configure:3000: checking for regex in -lgen" >&5
 ac_lib_var=`echo gen'_'regex | sed 'y%./+-:%__p__%'`
 if eval "test \"\${ac_cv_lib_$ac_lib_var+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -2957,7 +3004,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lgen  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 2961 "configure"
+#line 3008 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -2968,7 +3015,7 @@ int main() {
 regex()
 ; return 0; }
 EOF
-if { (eval echo configure:2972: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3019: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -2989,7 +3036,7 @@ else
 fi
 
    echo $ac_n "checking for main in -lintl""... $ac_c" 1>&6
-echo "configure:2993: checking for main in -lintl" >&5
+echo "configure:3040: checking for main in -lintl" >&5
 ac_lib_var=`echo intl'_'main | sed 'y%./+-:%__p__%'`
 if eval "test \"\${ac_cv_lib_$ac_lib_var+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -2997,14 +3044,14 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lintl  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 3001 "configure"
+#line 3048 "configure"
 #include "confdefs.h"
 
 int main() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:3008: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3055: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -3033,11 +3080,56 @@ fi # libxaw
 # if Motif not found, fall back to Xaw
 if test x$no_motif = xyes
 then
-   if test x$ac_cv_lib_Xaw_main = x -a x$with_Xaw = x
+   if test -z "$TOOLKIT_LIBS"
    then
       
+   echo $ac_n "checking for main in -lXaw3d""... $ac_c" 1>&6
+echo "configure:3088: checking for main in -lXaw3d" >&5
+ac_lib_var=`echo Xaw3d'_'main | sed 'y%./+-:%__p__%'`
+if eval "test \"\${ac_cv_lib_$ac_lib_var+set}\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lXaw3d -lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 3096 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+EOF
+if { (eval echo configure:3103: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  
+	TOOLKIT_LIBS="-lXaw3d"
+	cat >> confdefs.h <<\EOF
+#define HAVE_LIBXAW 1
+EOF
+
+	
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
+      if test -z "$TOOLKIT_LIBS"; then
+         
    echo $ac_n "checking for main in -lXaw""... $ac_c" 1>&6
-echo "configure:3041: checking for main in -lXaw" >&5
+echo "configure:3133: checking for main in -lXaw" >&5
 ac_lib_var=`echo Xaw'_'main | sed 'y%./+-:%__p__%'`
 if eval "test \"\${ac_cv_lib_$ac_lib_var+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -3045,14 +3137,14 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lXaw -lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 3049 "configure"
+#line 3141 "configure"
 #include "confdefs.h"
 
 int main() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:3056: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3148: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -3079,10 +3171,12 @@ else
 fi
 
 
+      fi
    fi
-   if test x$ac_cv_lib_Xaw_main != xyes -o x$with_Xaw = xno
+   if test x$ac_cv_lib_Xaw_main != xyes -a x$ac_cv_lib_Xaw3d_main != xyes \
+      || test x$with_Xaw = xno
    then
-      echo "configure: warning: Neither Xaw nor Motif found. Nothing will appear on the screen." 1>&2
+      echo "configure: warning: Neither Xaw3d" 1>&2
    fi
 fi
 

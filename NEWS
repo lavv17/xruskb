@@ -1,3 +1,13 @@
+Version 1.13.0 - 2000-02-14
+
+* Switch focus back to an application when focus goes to xrus' window.
+  (does not work for all window managers)
+* Remember last top level focused window, if focus goes to non-top window.
+* If window title has mode tag and application changes it, re-add the tag.
+* Limit motif functions of indicator window.
+* Event selection algorithm is simplified and sped up.
+* Several window properties added to xrus icon, to improve WM bahaviour.
+
 Version 1.12.2 - 2000-02-06
 
 * Add IO to yawerty layout.

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(xrus.c)
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(xruskb, 1.12.2)
+AM_INIT_AUTOMAKE(xruskb, 1.13.0)
 
 if test "$CFLAGS" = ""
 then
@@ -64,8 +64,8 @@ esac
 
 AC_DEFUN(XRUS_CHECK_XAW,
 [
-   AC_CHECK_LIB(Xaw,main,[
-	TOOLKIT_LIBS="-lXaw"
+   AC_CHECK_LIB($1,main,[
+	TOOLKIT_LIBS="-l$1"
 	AC_DEFINE(HAVE_LIBXAW)
 	],[],[-lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
 ])
@@ -74,11 +74,15 @@ AC_DEFUN(XRUS_CHECK_XAW,
 # if --with-Xaw was specified, check libXaw first
 if test x$with_Xaw = xyes
 then
-   XRUS_CHECK_XAW
+   XRUS_CHECK_XAW(Xaw3d)
+   if test -z "TOOLKIT_LIBS"; then
+      XRUS_CHECK_XAW(Xaw)
+   fi
 fi
 
 # if we don't use Xaw directly, test for Motif
-if test x$ac_cv_lib_Xaw_main != xyes -o x$with_Xaw != xyes
+if test x$ac_cv_lib_Xaw_main != xyes -a x$ac_cv_lib_Xaw3d_main != xyes \
+   || test x$with_Xaw != xyes
 then
 
 if test "$with_motif" != no; then
@@ -113,13 +117,17 @@ fi # libxaw
 # if Motif not found, fall back to Xaw
 if test x$no_motif = xyes
 then
-   if test x$ac_cv_lib_Xaw_main = x -a x$with_Xaw = x
+   if test -z "$TOOLKIT_LIBS"
    then
-      XRUS_CHECK_XAW
+      XRUS_CHECK_XAW(Xaw3d)
+      if test -z "$TOOLKIT_LIBS"; then
+         XRUS_CHECK_XAW(Xaw)
+      fi
    fi
-   if test x$ac_cv_lib_Xaw_main != xyes -o x$with_Xaw = xno
+   if test x$ac_cv_lib_Xaw_main != xyes -a x$ac_cv_lib_Xaw3d_main != xyes \
+      || test x$with_Xaw = xno
    then
-      AC_MSG_WARN(Neither Xaw nor Motif found. Nothing will appear on the screen.)
+      AC_MSG_WARN(Neither Xaw3d, Xaw nor Motif found. Nothing will appear on the screen.)
    fi
 fi
 

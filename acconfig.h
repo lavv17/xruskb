@@ -13,6 +13,10 @@
 
 #undef HAVE_LIBXAW
 
+#define TK_NONE   0
+#define TK_MOTIF  1
+#define TK_XAW    2
+
 #undef TK
 
 @BOTTOM@
@@ -27,10 +31,6 @@
 #endif
 
 #define KEYMAP_DIR   PKGDATADIR
-
-#define TK_NONE   0
-#define TK_MOTIF  1
-#define TK_XAW    2
 
 #ifndef TK
 # if defined HAVE_MOTIF
