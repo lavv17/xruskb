@@ -38,12 +38,12 @@
 *titlePerWindow0: (LAT)
 *titlePerWindow1: (RUS)
 
-! whether make the two buttons equal in size
+! whether to make the two buttons equal in size
 *adjustModeButtons: True
 
-*XmRowColumn*fontList: -*-helvetica-bold-r-*-*-14-*
-*SimpleMenu*font: -*-helvetica-bold-r-*-*-14-*
-*fontList: -*-helvetica-bold-r-*-*-14-*
+*XmRowColumn*fontList: -*-helvetica-medium-r-*-*-14-*
+*SimpleMenu*font: -*-helvetica-medium-r-*-*-14-*
+*fontList: -*-helvetica-medium-r-*-*-14-*
 
 ! Display the button in the lower left corner
 *geometry:	+0-0
@@ -77,9 +77,14 @@
 
 ! To use several alternate modmaps, specify the following
 ! resources:
-!*altMaps:  /path0/map0.xmm /path1/map1.xmm ...
-!*altmap0.labelString: iso8859-5 map
-!*altmap1.labelString: koi8-r map
+*altMaps: jcuken-cyr jcuken-koi8 jcuken-cp1251 \
+          yawerty-cyr yawerty-koi8 yawerty-cp1251
+*altmap0.labelString: jcuken
+*altmap1.labelString: jcuken koi-8      (hack)
+*altmap2.labelString: jcuken cp1251   (hack)
+*altmap3.labelString: yawerty
+*altmap4.labelString: yawerty koi-8    (hack)
+*altmap5.labelString: yawerty cp1251 (hack)
 !...
 !*altmapN.labelString: N'th map
 
