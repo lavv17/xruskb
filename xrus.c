@@ -1515,6 +1515,12 @@ int   main(int argc,char **argv)
    XChangeProperty(disp,XtWindow(top_level),wm_client_leader,XA_WINDOW,32,
          PropModeReplace,(void*)&w,1);
 
+   {  /* make the window transient */
+      Atom win_state=XInternAtom(disp,"_WIN_STATE",False);
+      static long state[2]={1,63};
+      XChangeProperty(disp,XtWindow(top_level),win_state,XA_CARDINAL,32,
+         PropModeReplace,(void*)state,2);
+   }
 #if TK!=TK_MOTIF && TK!=TK_NONE
 {
    /* we have to emulate motif hints as we don't have Motif */
