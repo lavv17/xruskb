@@ -174,6 +174,9 @@ XtResource        resources[]=
    {  "title1",	  "Title1",   XtRString,  sizeof(String),
             XtOffsetOf(XrusRec,title1),
             XtRString,  (XtPointer)0		},
+   {  "perWindow","PerWindow",XtRBoolean, sizeof(Boolean),
+            XtOffsetOf(XrusRec,per_window_state),
+            XtRImmediate,  (XtPointer)False     },
 };
 
 XrmOptionDescRec  options[]=
@@ -196,6 +199,7 @@ XrmOptionDescRec  options[]=
    {  "+fork",      "*noFork",     XrmoptionNoArg,   "true" },
    {  "-wmicon",    "*wmIcon",     XrmoptionNoArg,   "true"},
    {  "-wmaker",    "*wMaker",     XrmoptionNoArg,   "true"},
+   {  "-perwindow", "*perWindow",  XrmoptionNoArg,   "true"},
 };
 
 Display        *disp;
@@ -235,6 +239,9 @@ Atom  type_ret;
 int   format_ret;
 unsigned long nitems_ret,bytes_after_ret;
 unsigned char *prop;
+
+Atom kbd_state_atom;
+Window focus_window;
 
 int   xrus_check=1;
 
@@ -313,6 +320,15 @@ void  FixNewMode()
    NewMode&=~(TEMP_LAT);
    if(ShouldUseLat())
       NewMode|=TEMP_LAT;
+}
+
+static void SaveModeForWindow()
+{
+   long m=Mode&~(FOR_ONE|TEMP_LAT);
+   if(focus_window==0 || !AppData.per_window_state)
+      return;
+   XChangeProperty(disp,focus_window,kbd_state_atom,XA_CARDINAL,32,
+         PropModeReplace,(void*)&m,1);
 }
 
 void  SwitchKeyboard(int to)
@@ -407,9 +423,28 @@ void  SwitchKeyboard(int to)
          XBell(disp,30);
    }
    Mode=to;
+   SaveModeForWindow();
    ShowSwitchButton();
 }
 
+static void SwitchKeyboardForWindow(Window w)
+{
+   long *prop=0;
+   focus_window=0;
+   if(XGetWindowProperty(disp,w,kbd_state_atom,0L,256L,0,XA_CARDINAL,
+         &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
+        ==Success && type_ret!=None && nitems_ret==1)
+      NewMode=prop[0];
+   else
+      NewMode=Mode&~MODE;
+
+   NewMode&=~FOR_ONE;
+   FixNewMode();
+   SwitchKeyboard(NewMode);
+
+   if(prop)
+      XFree(prop);
+}
 static void InitCapsLockEmu()
 {
    KeyCode  *lock;
@@ -537,7 +572,9 @@ void  VisibilityChange(Widget w,XtPointer closure,XEvent *ev,Boolean *cont)
 
 void  PerformSwitch(void)
 {
-   SwitchKeyboard(Mode^MODE);
+   NewMode=(Mode^MODE)&~FOR_ONE;
+   FixNewMode();
+   SwitchKeyboard(NewMode);
 }
 
 /* a window is in cache => we have requested all needed input from the window */
@@ -585,8 +622,12 @@ void  DelWindow(Window w)
 
 int   window_is_top_level(Window w)
 {
+   type_ret=None;
+   prop=0;
    XGetWindowProperty(disp,w,XA_WM_CLASS,0L,0L,0,XA_STRING,
          &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,&prop);
+   if(prop)
+      XFree(prop);
    return(type_ret!=None);
 }
 
@@ -621,6 +662,7 @@ void  AddWindow(Window w,int tmout)
 {
    XWindowAttributes wa;
    long mask;
+   Bool is_top_level;
 
    if(AddToWindowCache(w)) /* if the window was not in cache */
    {
@@ -654,16 +696,21 @@ void  AddWindow(Window w,int tmout)
       if(mask&(KeyPressMask|KeyReleaseMask))
          mask|=(KeyPressMask|KeyReleaseMask);
 
+      is_top_level=window_is_top_level(w);
+
       /* third condition */
       if((mask&(KeyPressMask|KeyReleaseMask))
              !=(KeyPressMask|KeyReleaseMask)
-      && (w==wa.root || window_is_top_level(w) || is_wm_window(w)))
+      && (w==wa.root || is_top_level || is_wm_window(w)))
          mask|=(KeyPressMask|KeyReleaseMask);
       else
          DelWindow(w);  /* we'll check input mask later */
 
       if(w==wa.root)
 	 mask|=PointerMotionMask;   /* always want it for root window */
+
+      if(is_top_level)
+         mask|=FocusChangeMask;
 
       XSelectInput(disp,w,mask);
 
@@ -892,6 +939,11 @@ void  MainLoop(void)
             }
          }
          break;
+      case(FocusIn):
+         if(AppData.per_window_state)
+            SwitchKeyboardForWindow(ev.xfocus.window);
+         focus_window=ev.xfocus.window;
+         break;
       }
    }
 }
@@ -1071,6 +1123,7 @@ int   main(int argc,char **argv)
    char  *buf;
    char  err[1024];
    int   scr;
+   int   revert_to;
 
    Window w;
    Atom  wm_delete_window;
@@ -1114,6 +1167,7 @@ int   main(int argc,char **argv)
                 " -nofork                don't fork to background\n"
                 " -wmaker                display in Window Maker appicon\n"
                 " -wmicon                display in window manager icon\n"
+                " -perwindow             remember state for each window\n"
                 "\n",program);
          exit(0);
       }
@@ -1277,6 +1331,9 @@ int   main(int argc,char **argv)
 
    wm_client_leader=XInternAtom(disp,"WM_CLIENT_LEADER",False);
    wm_delete_window=XInternAtom(disp,"WM_DELETE_WINDOW",False);
+
+   kbd_state_atom=XInternAtom(disp,"KBD_STATE",False);
+   XGetInputFocus(disp,&focus_window,&revert_to);
 
    XtRealizeWidget(top_level);
 

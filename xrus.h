@@ -37,6 +37,7 @@ typedef struct
    String   xmodmap_program;
    String   title0;
    String   title1;
+   Boolean  per_window_state;
 } XrusRec;
 
 extern   XrusRec  AppData;
