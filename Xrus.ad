@@ -162,20 +162,20 @@ xrus.form.vSpace: 0
 *menu*lock.labelString:    Lock screen
 *menu*lock.label:          Lock screen
 
-*XmTextField.fontList:  -*-courier-bold-r-*-*-14-*-*-*-m-*
+*props*XmTextField.fontList:  -*-courier-bold-r-*-*-14-*-*-*-m-*
 
 *props.title: Xrus properties
 
 *props*locker_def.labelString: Default
 *props*locker_def.bottomAttachment: attach_form
 *props*locker_def.rightAttachment: attach_form
-*props*locker_def.fontList: -*-times-bold-r-*-*-12-*
+*props*locker_def.fontList: -*-times-medium-r-*-*-12-*
 
 *props*locker_test.labelString: Test
 *props*locker_test.bottomAttachment: attach_form
 *props*locker_test.rightAttachment: attach_widget
 *props*locker_test.rightWidget:   locker_def
-*props*locker_test.fontList: -*-times-bold-r-*-*-12-*
+*props*locker_test.fontList: -*-times-medium-r-*-*-12-*
 
 *props*locker.maxLength:   255
 *props*locker.bottomAttachment: attach_widget
@@ -291,7 +291,7 @@ xrus.form.vSpace: 0
 *props*switch_keys_def.topAttachment:  attach_widget
 *props*switch_keys_def.topWidget: switch_for_one_keys
 *props*switch_keys_def.bottomAttachment: attach_form
-*props*switch_keys_def.fontList: -*-times-bold-r-*-*-12-*
+*props*switch_keys_def.fontList: -*-times-medium-r-*-*-12-*
 
 *props*form4.leftAttachment: attach_form
 *props*form4.rightAttachment: attach_form
