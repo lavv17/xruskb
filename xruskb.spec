@@ -1,4 +1,4 @@
-%define version 1.14.1
+%define version 1.15.0
 %define release 1
 
 Name: xruskb
