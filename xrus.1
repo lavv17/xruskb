@@ -1,4 +1,4 @@
-.TH XRUS 1 "17 Nov 1999"
+.TH XRUS 1 "22 Jan 2000"
 .SH NAME
 xrus - X localized keyboard switch and autolock
 .SH SYNOPSIS
@@ -10,9 +10,10 @@ is a X client that watches keyboard and mouse events and serves as localized
 keyboard switch and autolock.
 .P
 To switch the keyboard, it swaps 1,2 and 3,4 columns of the keyboard map.
+If the map has more columns, xrus swaps the halves.
 Thus for
 .B xrus
-to operate properly, keyboard map has to have four columns. If it
+to operate properly, keyboard map has to have four or more columns. If it
 does not,
 .B xrus
 terminates with error message. If
@@ -180,6 +181,10 @@ not provide an event on change of event mask.
 .B *xmodmapProgram
 (type string; default BINDIR/xrusmodmap) Use specified
 program for keyboard map loading.
+.TP
+.BR *title0 " and " *title1
+(type string; default Xrus:LAT and Xrus:RUS)
+Set icon name for window manager in primary and secondary mode accordingly.
 
 .SH AUTHOR
 \fBxrus\fP was written by Alexander V. Lukyanov <lav@yars.free.net>.
