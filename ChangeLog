@@ -1,17 +1,3 @@
-2001-10-25  Oleg Safiullin <form@openbsd.ru>
-
-	* configure.in: add missing $.
-
-2001-08-16  lav
-
-	* xrus.c, xrus.h, props.c: support WM_DELETE_WINDOW properly in Xaw mode.
-	* Xrus.ad: set iconName for Xaw properties/error windows.
-
-2001-05-25  lav
-
-	* xrus.c, xrus.h: add keylog support; handle SIGUSR1 and SIGUSR2.
-	* xrus.doc-koi8, xrus.doc-english, xrus.1: document -keylog, signals.
-
 2000-03-20  lav
 
 	* kbdstate.c: add parentheses to be safe.

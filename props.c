@@ -263,7 +263,6 @@ int  PropsApply()
         "Ok", ErrorDismiss_CB, (XtPointer) error_shell);
 
       XtPopup(error_shell, XtGrabExclusive);
-      XSetWMProtocols(disp,XtWindow(error_shell),&wm_delete_window,1);
 
 #endif /* TK==TK_XAW */
       return 0;
@@ -681,12 +680,8 @@ void  PropsPopup()
 }
 #endif /* TK_MOTIF */
 
-   XtPopup(props.shell, XtGrabNone);
-
-#if TK==TK_XAW
-   XSetWMProtocols(disp,XtWindow(props.shell),&wm_delete_window,1);
-#endif
-} /* End of PropsPopup */
+  XtPopup(props.shell, XtGrabNone);
+}
 #else /* TK_NONE */
 void PropsPopup() {}
 #endif
