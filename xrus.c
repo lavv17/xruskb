@@ -337,39 +337,43 @@ static void SaveModeForWindow()
    if( AppData.titlePerWindow0    && AppData.titlePerWindow1
    && (AppData.titlePerWindow0[0] || AppData.titlePerWindow1[0]))
    {
-      prop=0;
-      if(XGetWindowProperty(disp,focus_window,XA_WM_NAME,0L,256L,0,XA_STRING,
-            &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
-           ==Success && type_ret!=None && format_ret==8)
+      XTextProperty prop;
+      if(XGetWMName(disp,focus_window,&prop) && prop.format==8)
       {
-         char *new_title=alloca(strlen(prop)+256);
+         char *new_title=alloca(prop.nitems+256);
          char *append=(Mode&MODE)?AppData.titlePerWindow1
                                  :AppData.titlePerWindow0;
          char *old=(Mode&MODE)?AppData.titlePerWindow0
                               :AppData.titlePerWindow1;
          int old_len=strlen(old);
          int append_len=strlen(append);
-         int title_len=strlen(prop);
+         int title_len=prop.nitems;
 
-         strcpy(new_title,prop);
+         memcpy(new_title,prop.value,prop.nitems);
+         XFree(prop.value);
 
          if(title_len>old_len
          && !strcmp(new_title+title_len-old_len,old))
-            strcpy(new_title+title_len-old_len,append);
+            title_len-=old_len;
          else if(title_len>append_len
          && !strcmp(new_title+title_len-append_len,append))
             goto skip_title_change;
-         else
+
+         if(title_len==0)
          {
-            if(title_len>1 && new_title[title_len-1]!=' ')
-               strcat(new_title," ");
-            strcat(new_title,append);
+            strcpy(new_title,"untitled");
+            title_len=strlen(new_title);
          }
-         XChangeProperty(disp,focus_window,XA_WM_NAME,XA_STRING,8,
-                         PropModeReplace,(void*)new_title,strlen(new_title));
-      skip_title_change:
-         if(prop)
-            XFree(prop);
+         if(new_title[title_len-1]!=' ')
+            new_title[title_len++]=' ';
+         strcpy(new_title+title_len,append);
+         title_len+=append_len;
+
+         prop.nitems=title_len;
+         prop.value=new_title;
+         XSetWMName(disp,focus_window,&prop);
+
+      skip_title_change:;
       }
    }
    XChangeProperty(disp,focus_window,kbd_state_atom,XA_CARDINAL,32,
@@ -480,7 +484,7 @@ static void SwitchKeyboardForWindow(Window w)
    focus_window=0;
    if(XGetWindowProperty(disp,w,kbd_state_atom,0L,256L,0,XA_CARDINAL,
          &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
-        ==Success && type_ret!=None && nitems_ret==1)
+        ==Success && type_ret==XA_CARDINAL && nitems_ret==1)
       NewMode=(Mode&~SAVE_MASK)|(prop[0]&SAVE_MASK);
    else
       NewMode=Mode&~MODE;
@@ -669,8 +673,13 @@ void  DelWindow(Window w)
 
 int   window_is_top_level(Window w)
 {
+   XTextProperty tprop;
+   if(XGetWMName(disp,w,&tprop) && tprop.value)
+   {
+      XFree(tprop.value);
+      return True;
+   }
    type_ret=None;
-   prop=0;
    XGetWindowProperty(disp,w,XA_WM_CLASS,0L,0L,0,XA_STRING,
          &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,&prop);
    if(prop)
@@ -780,14 +789,14 @@ void  AddChildren(Window w)
    {
       if(XGetWindowProperty(disp,w,XA_WM_CLASS,0L,256L,0,XA_STRING,
             &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,&prop)
-         ==Success && type_ret!=None)
+         ==Success && type_ret==XA_STRING)
       {
          if(!strcmp((char*)(prop+strlen((char*)prop)+1),AppClass))
          {
             fprintf(stderr,"%s: xrus already runs on the display\n",program);
             exit(1);
          }
-         XtFree(prop);
+         XFree(prop);
       }
    }
 
@@ -876,6 +885,16 @@ void  CheckKeymap()
    first_time=0;
 }
 
+static void QueryFocus()
+{
+   Window w=0;
+   int revert_to;
+   XGetInputFocus(disp,&w,&revert_to);
+   if(AppData.per_window_state)
+      SwitchKeyboardForWindow(w);
+   focus_window=w;
+}
+
 static
 void  MappingNotifyTimeoutHandler(XtPointer closure,XtIntervalId *id)
 {
@@ -883,14 +902,7 @@ void  MappingNotifyTimeoutHandler(XtPointer closure,XtIntervalId *id)
    MappingNotifyTimeout=-1;
    CheckKeymap();
    if(focus_window==0)
-   {
-      Window w=0;
-      int revert_to;
-      XGetInputFocus(disp,&w,&revert_to);
-      if(AppData.per_window_state)
-         SwitchKeyboardForWindow(w);
-      focus_window=w;
-   }
+      QueryFocus();
 }
 
 void  MainLoop(void)
@@ -920,6 +932,7 @@ void  MainLoop(void)
       {
       case(MapNotify):
          AddWindow(ev.xmap.window,True);
+         QueryFocus();
          break;
       case(ReparentNotify):
          /* the structure could change under us - re-add the window */
