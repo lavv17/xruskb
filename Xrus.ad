@@ -344,7 +344,6 @@ xrus.form.vSpace: 0
 !-------------------------------------------------------
 
 *props_xaw*title: Properties
-*props_xaw*iconName: Xrus Properties
 
 *props_xaw*locker_toggle.label: Locking
 
@@ -494,4 +493,3 @@ xrus.form.vSpace: 0
 *props_xaw*cancel_button.fromVert: default2_button
 
 *props_xaw.error_shell.title: Error
-*props_xaw.error_shell.iconName: Xrus Error

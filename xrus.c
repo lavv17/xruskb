@@ -218,8 +218,6 @@ XrmOptionDescRec  options[]=
 };
 
 Display        *disp;
-Atom           wm_delete_window;
-Atom           wm_protocols;
 XtAppContext   app_context;
 
 #define	StartArgs()		count=0
@@ -291,7 +289,7 @@ static void SetTitle(int);
 # define SetTitle(x)
 #endif
 
-#define MaxLetterKeySym 0xF000
+#define MaxLetterKeySym 0x1000
 #define NationalKeySym(ks) (ks>=128 && ks<MaxLetterKeySym)
 #define AsciiKeySym(ks) (ks>0 && ks<128)
 
@@ -1222,27 +1220,6 @@ void  MainLoop(void)
                         (XtTimerCallbackProc)SetTitleIndicatorOnTimeout,
                         (XtPointer)ev.xproperty.window);
          }
-         break;
-#if TK==TK_XAW
-      case(ClientMessage):
-         fflush(stdout);
-         if(ev.xclient.message_type==wm_protocols && ev.xclient.format==32
-         && ev.xclient.data.l[0]==wm_delete_window)
-         {
-            if(ev.xclient.window==XtWindow(top_level))
-            {
-               XtDestroyApplicationContext(app_context);
-               app_context=NULL;
-            }
-            else
-            {
-               Widget w=XtWindowToWidget(disp,ev.xclient.window);
-               if(w)
-                  XtPopdown(w);
-            }
-         }
-         break;
-#endif /* TK_XAW */
       }
    }
 }
@@ -1431,6 +1408,7 @@ int   main(int argc,char **argv)
    int   scr;
 
    Window w;
+   Atom  wm_delete_window;
    Atom  wm_client_leader;
 
    int   saved_argc=argc;
@@ -1659,7 +1637,6 @@ int   main(int argc,char **argv)
 
    wm_client_leader=XInternAtom(disp,"WM_CLIENT_LEADER",False);
    wm_delete_window=XInternAtom(disp,"WM_DELETE_WINDOW",False);
-   wm_protocols=XInternAtom(disp,"WM_PROTOCOLS",False);
 
    XChangeProperty(disp,w,ol_decor_del_atom,XA_ATOM,32,
          PropModeReplace,(void*)ol_decor_del,2);

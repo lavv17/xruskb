@@ -53,7 +53,6 @@ extern   char  DefaultToRusKeys[];
 extern   char  DefaultSwitchForOneKeys[];
 
 extern   Display        *disp;
-extern   Atom           wm_delete_window;
 extern   XtAppContext   app_context;
 
 #define	 StartArgs()		count=0
