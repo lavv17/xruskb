@@ -291,7 +291,7 @@ static void SetTitle(int);
 # define SetTitle(x)
 #endif
 
-#define MaxLetterKeySym 0x1000
+#define MaxLetterKeySym 0xF000
 #define NationalKeySym(ks) (ks>=128 && ks<MaxLetterKeySym)
 #define AsciiKeySym(ks) (ks>0 && ks<128)
 
