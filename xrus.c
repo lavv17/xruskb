@@ -238,6 +238,7 @@ int   Mode=LAT;
 int   NewMode;
 
 Widget   top_level=NULL;
+Window   our_host_window=0;
 #if TK!=TK_NONE
 Widget   form_w;
 Widget   switch_button[2];
@@ -250,7 +251,10 @@ unsigned char *prop;
 
 Atom kbd_state_atom;
 Window focus_window;
+int    revert_to=RevertToNone;
 Window last_top_level_focus_window;
+int    last_top_level_revert_to=RevertToNone;
+Bool   pushed=False;
 
 int   xrus_check=1;
 
@@ -679,13 +683,6 @@ void  VisibilityChange(Widget w,XtPointer closure,XEvent *ev,Boolean *cont)
 }
 #endif /* TK!=TK_NONE */
 
-void  PerformSwitch(void)
-{
-   NewMode=(Mode^MODE)&~FOR_ONE;
-   FixNewMode();
-   SwitchKeyboard(NewMode);
-}
-
 /* a window is in cache => we have requested all needed input from the window */
 /* returns a boolean indicating the window was in cache
    and adds it to cache if it was not */
@@ -837,7 +834,10 @@ static void AddWindow(Window w,int tmout,int max_depth)
    {
       AddWindow(children[i],False,max_depth-1);
       if(w==focus_window && window_is_top_level(children[i]))
+      {
          last_top_level_focus_window=children[i];
+         last_top_level_revert_to=revert_to;
+      }
    }
    XFree(children);
 
@@ -925,23 +925,38 @@ void  CheckKeymap()
    first_time=0;
 }
 
-static void NewFocus(Window w)
+static Window set_focus;
+static int set_revert_to;
+XtIntervalId focus_tmout=-1;
+static void SetFocusOnTimeout()
+{
+   if(set_focus && pushed)
+      XSetInputFocus(disp,set_focus,set_revert_to,CurrentTime);
+   focus_tmout=-1;
+}
+static void NewFocus(Window w,int rt)
 {
    if(w==focus_window)
       return;
-   if(top_level && w==XtWindow(top_level))
+   if((top_level && w==XtWindow(top_level)) || w==our_host_window)
    {
-      if(focus_window)
-         XSetInputFocus(disp,focus_window,RevertToNone,CurrentTime);
+      if(focus_tmout!=-1)
+         XtRemoveTimeOut(focus_tmout);
+      set_focus=last_top_level_focus_window;
+      set_revert_to=last_top_level_revert_to;
+      focus_tmout=XtAppAddTimeOut(app_context,200,
+                        (XtTimerCallbackProc)SetFocusOnTimeout,NULL);
       return;
    }
    if(window_is_top_level(w))
    {
       last_top_level_focus_window=w;
+      last_top_level_revert_to=rt;
       if(AppData.per_window_state)
          SwitchKeyboardForWindow(w);
    }
    focus_window=w;
+   revert_to=rt;
    DelWindow(w);
    AddWindow(w,False,1);
 }
@@ -952,7 +967,25 @@ static void QueryFocus()
    int revert_to=0;
    XGetInputFocus(disp,&w,&revert_to);
    if(w)
-      NewFocus(w);
+      NewFocus(w,revert_to);
+}
+
+XtIntervalId pushed_tmout=-1;
+static void drop_pushed()
+{
+   pushed_tmout=-1;
+   pushed=False;
+}
+static void PerformSwitch(void)
+{
+   NewMode=(Mode^MODE)&~FOR_ONE;
+   FixNewMode();
+   SwitchKeyboard(NewMode);
+   pushed=True;
+   if(pushed_tmout!=-1)
+      XtRemoveTimeOut(pushed_tmout);
+   pushed_tmout=XtAppAddTimeOut(app_context,2000,
+                        (XtTimerCallbackProc)drop_pushed,NULL);
 }
 
 static
@@ -997,6 +1030,8 @@ void  MainLoop(void)
       case(ReparentNotify):
          /* the structure could change under us - re-add the window */
          AddWindow(ev.xreparent.window,True,1000000);
+         if(ev.xreparent.window==XtWindow(top_level))
+            our_host_window=ev.xreparent.parent;
          break;
       case(DestroyNotify):
          DelWindow(ev.xdestroywindow.window);
@@ -1069,7 +1104,7 @@ void  MainLoop(void)
          }
          break;
       case(FocusIn):
-         NewFocus(ev.xfocus.window);
+         QueryFocus();
          break;
       case(PropertyNotify):
          if(AppData.per_window_state && ev.xproperty.atom==XA_WM_NAME
