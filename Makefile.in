@@ -430,16 +430,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-alloca.o: alloca.c config.h
-altmap.o: altmap.c config.h altmap.h xrus.h keycomb.h xalloca.h
-defres.o: defres.c config.h
-kbdstate.o: kbdstate.c config.h xrus.h kbdstate.h
-keycomb.o: keycomb.c config.h keycomb.h xrus.h xalloca.h
-menu.o: menu.c config.h xrus.h menu.h props.h altmap.h
-props.o: props.c config.h keycomb.h xrus.h xalloca.h
-xrus.o: xrus.c config.h xalloca.h keycomb.h xrus.h props.h menu.h \
-	kbdstate.h confpaths.h
-
 info-am:
 info: info-recursive
 dvi-am:

@@ -1,9 +1,8 @@
-You can use xruskb with Window Maker window manager. Launch it
-like this:
+You can use xruskb with Window Maker window manager. Launch it like this:
 
 	xrus -wmaker
 
 and then drag its appicon to dock.
 
-I recommend using motif or lesstif, and copy Xrus.wmaker to ~/Xrus
-or insert its contents to ~/.Xdefaults
+I recommend using motif or lesstif, and copy Xrus.wmaker to ~/Xrus or
+insert its contents to ~/.Xdefaults

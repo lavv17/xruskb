@@ -1,0 +1,8 @@
+Makefile
+*.tar.gz
+config.*
+.le.ini
+xrus
+stamp-h
+defres.c
+confpaths.h

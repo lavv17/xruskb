@@ -1,6 +1,18 @@
-Q: I've installed xruskb and it works, but I don't see russian letters.
+Q: I've installed xruskb and it works, but I don't see russian letters but
+   accented latin letters instead.
 A: You have to tune your applications to use proper russian fonts.
    See Cyrillic-HOWTO at ftp://sunsite.unc.edu/pub/Linux/docs/HOWTO
    (it is not only for linux)
 
-Q:
+Q: I cannot input russian letters.
+A: There can be several reasons. If you use *-cyr key map, then it is
+   important to have a recent version of XFree86 and proper localization, that
+   is LC_CTYPE=ru_RU.KOI8-R, and XFree86 should be able to recognize the
+   charset. On some versions of glibc is is needed to add a locale alias to
+   /usr/X11R6/lib/X11/locale/locale.alias, a line containing
+
+      ru_RU.koi8r    ru_RU.KOI8-R
+
+   If you use *-koi8 key maps (or different encoding), then sometimes it is
+   importand not to have a localization. It is a hack method anyway. See also
+   Cyrillic-HOWTO on how to tune bash.

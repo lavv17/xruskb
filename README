@@ -1,13 +1,36 @@
-   Short description of Xrus
-   ~~~~~~~~~~~~~~~~~~~~~~~~~
-   Xrus - program for switching two keyboard layouts with a hot
-key combination. It also serves as autolock.
-   It can be  compiled with Motif, Lesstif, Xaw  or without any
-widget library. In  the later case it won't show  its icon with
-keyboard indicator.
-   It gets all keyboard and mouse events; when a particular hot
-key combination  is pressed,  it swaps 1,2  and 3,4  columns of
-keyboard map. When a timeout  without keyboard and mouse events
-passes, it starts a locker.
+Short description of Xrus
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   Author: Alexander V. Lukaynov <lav@yars.free.net>
+Xrus - program for switching two keyboard layouts with a hot key
+combination. It also serves as autolock.
+
+It can be compiled with Motif, Lesstif, Xaw or without any widget library.
+In the later case it won't show its icon with keyboard indicator.
+
+It gets all keyboard and mouse events; when a particular hot key
+combination is pressed, it swaps 1,2 and 3,4 columns of keyboard map. (if
+keyboard map has more than 4 columns, it swaps halves). When a timeout
+without keyboard and mouse events passes, it starts a locker.
+
+Download
+~~~~~~~~
+
+You can download latest version of xruskb from the following locations:
+
+	ftp://ftp.yars.free.net/pub/software/unix/X11/ (primary site)
+	ftp://ftp.relcom.ru/pub/x11/cyrillic/
+	ftp://metalab.unc.edu/pub/Linux/X11/xutils/
+
+There is also an anonymous cvs server. You can get the latest source using
+these commands:
+
+	CVSROOT=:pserver:anonymous@swing.yars.free.net:/home/lav/cvsroot
+	export CVSROOT
+	cvs login (empty password, just hit enter)
+	cvs -z9 co xruskb
+
+
+Author
+~~~~~~
+
+Alexander V. Lukaynov <lav@yars.free.net>

@@ -1,5 +1,5 @@
-   Keyboard switch and indicator Xrus (Version 1.9.0)
-   ==================================================
+   Keyboard switch and indicator Xrus (Version 1.10.0)
+   ===================================================
 
    Program description
    ~~~~~~~~~~~~~~~~~~~
@@ -14,7 +14,9 @@ functionality.
    The method of the program operation is very simple - it just
 gets  all  keyboard  events  and  when  a  particular  keyboard
 combination  is   pressed  it   switches  keyboard   layout  by
-exchanging columns 1,2 and 3,4 of keyboard map.
+exchanging columns 1,2 and 3,4 of keyboard map. If the keyboard
+maps has  more than 4 columns,  it exchanges two halves  of the
+keyboard map.
    By  default,  Xrus  uses   Shift_L+Shift_R  combination  for
 switching. You can  tune it to use any  combination. Also, Xrus
 switch  the keyboard  when  you press  the  button (icon)  with
