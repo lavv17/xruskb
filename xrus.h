@@ -40,6 +40,7 @@ typedef struct
    Boolean  per_window_state;
    String   titlePerWindow0;
    String   titlePerWindow1;
+   Boolean  occupyAllDesks;
 } XrusRec;
 
 extern   XrusRec  AppData;

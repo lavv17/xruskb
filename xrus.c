@@ -184,6 +184,9 @@ XtResource        resources[]=
    {  "titlePerWindow1","TitlePerWindow1",XtRString,sizeof(String),
             XtOffsetOf(XrusRec,titlePerWindow1),
             XtRString,  (XtPointer)0		},
+   {  "occupyAllDesks","OccupyAllDesks",XtRBoolean, sizeof(Boolean),
+            XtOffsetOf(XrusRec,occupyAllDesks),
+            XtRImmediate,  (XtPointer)True      },
 };
 
 XrmOptionDescRec  options[]=
@@ -1533,21 +1536,31 @@ int   main(int argc,char **argv)
    XChangeProperty(disp,XtWindow(top_level),wm_client_leader,XA_WINDOW,32,
          PropModeReplace,(void*)&w,1);
 
-   {  /* make the window global for all desktops */
-      Atom win_state,sgi_desks_hints,sgi_desks_always_global;
-      long value;
-      /* for gnome */
-      static long state[2]={1,63};
-      win_state=XInternAtom(disp,"_WIN_STATE",False);
-      XChangeProperty(disp,XtWindow(top_level),win_state,XA_CARDINAL,32,
-         PropModeReplace,(void*)state,2);
-      /* for SGI */
-      sgi_desks_hints=XInternAtom(disp,"_SGI_DESKS_HINTS",False);
-      sgi_desks_always_global=XInternAtom(disp,"_SGI_DESKS_ALWAYS_GLOBAL",False);
-      value=sgi_desks_always_global;
-      XChangeProperty(disp,XtWindow(top_level),sgi_desks_hints,XA_ATOM,32,
-         PropModeReplace,(void*)&value,1);
-   }
+#if TK!=TK_NONE
+if(AppData.occupyAllDesks)
+{  /* make the window global for all desktops */
+   Atom win_state,sgi_desks_hints,sgi_desks_always_global;
+   Atom kwm_win_sticky;
+   long value;
+   /* for gnome */
+   static long state[2]={1,63};
+   win_state=XInternAtom(disp,"_WIN_STATE",False);
+   XChangeProperty(disp,XtWindow(top_level),win_state,XA_CARDINAL,32,
+      PropModeReplace,(void*)state,2);
+   /* for SGI */
+   sgi_desks_hints=XInternAtom(disp,"_SGI_DESKS_HINTS",False);
+   sgi_desks_always_global=XInternAtom(disp,"_SGI_DESKS_ALWAYS_GLOBAL",False);
+   value=sgi_desks_always_global;
+   XChangeProperty(disp,XtWindow(top_level),sgi_desks_hints,XA_ATOM,32,
+      PropModeReplace,(void*)&value,1);
+   /* for KDE */
+   value=1;
+   kwm_win_sticky=XInternAtom(disp,"KWM_WIN_STICKY",False);
+   XChangeProperty(disp,XtWindow(top_level),kwm_win_sticky,kwm_win_sticky,32,
+      PropModeReplace,(void*)&value,1);
+
+}
+#endif
 #if TK!=TK_MOTIF && TK!=TK_NONE
 {
    /* we have to emulate motif hints as we don't have Motif */
