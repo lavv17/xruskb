@@ -1,6 +1,6 @@
 /*
   xrus - keyboard switcher/indicator
-  Copyright (c) 1995-1998 Alexander V. Lukyanov
+  Copyright (c) 1995-2000 Alexander V. Lukyanov
   This is free software with no warranty.
   See COPYING for details.
 */
@@ -177,6 +177,12 @@ XtResource        resources[]=
    {  "perWindow","PerWindow",XtRBoolean, sizeof(Boolean),
             XtOffsetOf(XrusRec,per_window_state),
             XtRImmediate,  (XtPointer)False     },
+   {  "titlePerWindow0","TitlePerWindow0",XtRString,sizeof(String),
+            XtOffsetOf(XrusRec,titlePerWindow0),
+            XtRString,  (XtPointer)0		},
+   {  "titlePerWindow1","TitlePerWindow1",XtRString,sizeof(String),
+            XtOffsetOf(XrusRec,titlePerWindow1),
+            XtRString,  (XtPointer)0		},
 };
 
 XrmOptionDescRec  options[]=
@@ -225,6 +231,7 @@ enum
    TEMP_LAT=2,
    CAPSLOCK_ON=4,
    FOR_ONE=8,
+   SAVE_MASK=MODE
 };
 int   Mode=LAT;
 int   NewMode;
@@ -324,11 +331,48 @@ void  FixNewMode()
 
 static void SaveModeForWindow()
 {
-   long m=Mode&~(FOR_ONE|TEMP_LAT);
+   long m=Mode&SAVE_MASK;
    if(focus_window==0 || !AppData.per_window_state)
       return;
+   if(AppData.titlePerWindow0 && AppData.titlePerWindow1)
+   {
+      prop=0;
+      if(XGetWindowProperty(disp,focus_window,XA_WM_NAME,0L,256L,0,XA_STRING,
+            &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
+           ==Success && type_ret!=None && format_ret==8)
+      {
+         char *new_title=alloca(strlen(prop)+256);
+         char *append=(Mode&MODE)?AppData.titlePerWindow1
+                                 :AppData.titlePerWindow0;
+         char *old=(Mode&MODE)?AppData.titlePerWindow0
+                              :AppData.titlePerWindow1;
+         int old_len=strlen(old);
+         int append_len=strlen(append);
+         int title_len=strlen(prop);
+
+         strcpy(new_title,prop);
+
+         if(title_len>old_len
+         && !strcmp(new_title+title_len-old_len,old))
+            strcpy(new_title+title_len-old_len,append);
+         else if(title_len>append_len
+         && !strcmp(new_title+title_len-append_len,append))
+            goto skip_title_change;
+         else
+         {
+            if(title_len>1 && new_title[title_len-1]!=' ')
+               strcat(new_title," ");
+            strcat(new_title,append);
+         }
+         XChangeProperty(disp,focus_window,XA_WM_NAME,XA_STRING,8,
+                         PropModeReplace,(void*)new_title,strlen(new_title));
+      skip_title_change:
+         if(prop)
+            XFree(prop);
+      }
+   }
    XChangeProperty(disp,focus_window,kbd_state_atom,XA_CARDINAL,32,
-         PropModeReplace,(void*)&m,1);
+                   PropModeReplace,(void*)&m,1);
 }
 
 void  SwitchKeyboard(int to)
@@ -339,6 +383,7 @@ void  SwitchKeyboard(int to)
    XKeyboardControl  kbd_control;
    int   from_mode,to_mode,from_caps,to_caps;
    int   changed=0;
+   int   from=Mode;
 
    if(to==Mode)
       return;
@@ -423,7 +468,8 @@ void  SwitchKeyboard(int to)
          XBell(disp,30);
    }
    Mode=to;
-   SaveModeForWindow();
+   if((from&SAVE_MASK) != (to&SAVE_MASK))
+      SaveModeForWindow();
    ShowSwitchButton();
 }
 
@@ -434,7 +480,7 @@ static void SwitchKeyboardForWindow(Window w)
    if(XGetWindowProperty(disp,w,kbd_state_atom,0L,256L,0,XA_CARDINAL,
          &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
         ==Success && type_ret!=None && nitems_ret==1)
-      NewMode=prop[0];
+      NewMode=(Mode&~SAVE_MASK)|(prop[0]&SAVE_MASK);
    else
       NewMode=Mode&~MODE;
 
@@ -835,6 +881,15 @@ void  MappingNotifyTimeoutHandler(XtPointer closure,XtIntervalId *id)
    (void)closure; (void)id;
    MappingNotifyTimeout=-1;
    CheckKeymap();
+   if(focus_window==0)
+   {
+      Window w=0;
+      int revert_to;
+      XGetInputFocus(disp,&w,&revert_to);
+      if(AppData.per_window_state)
+         SwitchKeyboardForWindow(w);
+      focus_window=w;
+   }
 }
 
 void  MainLoop(void)
@@ -1123,7 +1178,6 @@ int   main(int argc,char **argv)
    char  *buf;
    char  err[1024];
    int   scr;
-   int   revert_to;
 
    Window w;
    Atom  wm_delete_window;
@@ -1144,7 +1198,7 @@ int   main(int argc,char **argv)
       {
          printf("Xrus(keyboard switcher) version " VERSION "\n"
                 "\n"
-                "Copyright (c) 1995-98 Alexander V. Lukyanov (lav@yars.free.net)\n"
+                "Copyright (c) 1995-2000 Alexander V. Lukyanov (lav@yars.free.net)\n"
                 "This is free software that gives you freedom to use, modify and distribute\n"
                 "it under certain conditions, see COPYING (GNU GPL) for details.\n"
                 "There is ABSOLUTELY NO WARRANTY, use at your own risk.\n");
@@ -1333,7 +1387,6 @@ int   main(int argc,char **argv)
    wm_delete_window=XInternAtom(disp,"WM_DELETE_WINDOW",False);
 
    kbd_state_atom=XInternAtom(disp,"KBD_STATE",False);
-   XGetInputFocus(disp,&focus_window,&revert_to);
 
    XtRealizeWidget(top_level);
 

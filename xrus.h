@@ -1,6 +1,6 @@
 /*
   xrus - keyboard switcher/indicator
-  Copyright (c) 1996 Alexander V. Lukyanov
+  Copyright (c) 1996-2000 Alexander V. Lukyanov
   This is free software with no warranty.
   See COPYING for details.
 */
@@ -38,6 +38,8 @@ typedef struct
    String   title0;
    String   title1;
    Boolean  per_window_state;
+   String   titlePerWindow0;
+   String   titlePerWindow1;
 } XrusRec;
 
 extern   XrusRec  AppData;
