@@ -29,10 +29,10 @@ void  KeepTrackOfKeyboard(XEvent *ev)
    switch(ev->type)
    {
    case KeyPress:
-      key_vector[ev->xkey.keycode/8]|=(1<<ev->xkey.keycode%8);
+      key_vector[ev->xkey.keycode/8]|=(1<<(ev->xkey.keycode%8));
       break;
    case KeyRelease:
-      key_vector[ev->xkey.keycode/8]&=~(1<<ev->xkey.keycode%8);
+      key_vector[ev->xkey.keycode/8]&=~(1<<(ev->xkey.keycode%8));
       break;
    case KeymapNotify:
 #ifdef DEBUG
@@ -60,7 +60,7 @@ void  KeepTrackOfKeyboard(XEvent *ev)
 
 int   IsKeyCodePressed(KeyCode i)
 {
-   return(key_vector[i/8]&(1<<i%8));
+   return(key_vector[i/8]&(1<<(i%8)));
 }
 int   IsKeySymPressed(KeySym ks)
 {
