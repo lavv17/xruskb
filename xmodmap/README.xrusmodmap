@@ -1,0 +1,15 @@
+This is xrusmodmap description.
+
+The need for xrusmodmap arises because of:
+* standard xmodmap (XFree86-3.3.3) has bug with realloc.
+* standard xmodmap uses all columns of keyboard map to find keycodes for
+  keysym. This makes troubles for russian keyboard layouts.
+  
+This modification of xmodmap adds option -K, which is used to specify
+set of key map columns which are used to find keycodes from keysym.
+By default it uses two first columns.
+
+Example:
+
+    xrusmodmap -K 13	    - use first and third columns
+

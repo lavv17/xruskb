@@ -1,0 +1,470 @@
+! Xrus - russian keyboard for X (Version 1.9.0)
+! Copyright (c) 1995-98 by Alexander V. Lukyanov
+
+! Some systems provide their own default background,
+! topShadowColor and bottomShadowColor (e.g. Digital Unix)
+! On those systems you may want to comment out the following line
+*background:   #ccc
+
+*modeButton0.fontList: -*-times-bold-r-*-*-14-*-*-*-*-*-iso8859-1
+*modeButton0.font: -*-times-bold-r-*-*-14-*-*-*-*-*-iso8859-1
+*modeButton1.fontList: -*-times-bold-r-*-*-14-*-*-*-*-*-iso8859-1
+*modeButton1.font: -*-times-bold-r-*-*-14-*-*-*-*-*-iso8859-1
+
+! You can specify look of the button in both states
+! (they are in XmPushButton class in case of Motif and Command with Xaw)
+!*modeButton0.width:  100
+!*modeButton1.width:  100
+
+! For Motif or Lesstif you can use pictures
+!*modeButton0.labelType:	pixmap
+!*modeButton1.labelType:	pixmap
+! -- these are L and Yat pictures
+!*modeButton0.labelPixmap:	/usr/share/xruskb/DocumentL.xpm
+!*modeButton1.labelPixmap:	/usr/share/xruskb/DocumentY.xpm
+! -- and these are USA and Russian flags
+!*modeButton0.labelPixmap:	/usr/share/xruskb/usa.xpm
+!*modeButton1.labelPixmap:	/usr/share/xruskb/rus.xpm
+
+*modeButton0.labelString:   LAT
+*modeButton1.labelString:   RUS
+*modeButton0.label:   LAT
+*modeButton1.label:   RUS
+
+! whether make the two buttons equal in size
+*adjustModeButtons: True
+
+*XmRowColumn*fontList: -*-helvetica-bold-r-*-*-14-*
+*SimpleMenu*font: -*-helvetica-bold-r-*-*-14-*
+*fontList: -*-helvetica-bold-r-*-*-14-*
+
+! Display the button in the lower left corner
+*geometry:	+0-0
+
+! To load russian modmap automatically on xrus startup, specify this:
+!*xmodmap: /path/russian.xmm
+
+! If you want xrus to hang always on top of other windows, uncomment this:
+!*alwaysOnTop: True
+
+! The following 7 resources are customisable from Menu->Properties
+! You can also save the properties to ~/.xrus
+! {
+! The delay before autolock activisation (in minutes)
+!*timeout:	30
+! Use the autolock feature
+!*autolock:	false
+! The command to use as screen locker
+!*locker:	exec xlock -remote >/dev/null 2>&1
+! Bell when switching keyboard mode
+!*useBell:	false
+
+!*switchKeys:	Shift_L+Shift_R
+!*switchKeys:	Shift_L+Control_L
+
+! You can also specify non-triggering behavior by supplying
+! key combinations for the following resources:
+!*toLatKeys:   Alt_L
+!*toRusKeys:   Alt_R
+! }
+
+! To use several alternate modmaps, specify the following
+! resources:
+!*altMaps:  /path0/map0.xmm /path1/map1.xmm ...
+!*altmap0.labelString: iso8859-5 map
+!*altmap1.labelString: koi8-r map
+!...
+!*altmapN.labelString: N'th map
+
+!*led: 2
+! led on Sun's compose key
+
+! show the icon?
+!*icon: true
+
+! Map the icon when it is unmapped by a window manager -
+! useful for virtual desktops.
+!*alwaysMapped: True
+
+!*capsLockEmu: true
+!*capsLockLed: ?
+
+!*recheckTime: 1500
+
+!*xmodmapProgram: xrusmodmap
+
+*modeButton0.translations: #override <Btn3Down>: XrusMenuPopup()
+*modeButton1.translations: #override <Btn3Down>: XrusMenuPopup()
+*menu.menuPost: <Btn3Down>
+
+! if you have 2-button mouse and have problems with popup menu,
+! uncomment the following resources and comment the above
+!*modeButton0.translations: #override <Btn2Down>: XrusMenuPopup()
+!*modeButton1.translations: #override <Btn2Down>: XrusMenuPopup()
+!*menu.menuPost: <Btn2Down>
+
+!---------- Usually you don't have to change anything below -----------
+
+*modeButton0.highlightThickness: 0
+*modeButton1.highlightThickness: 0
+*modeButton0.shadowThickness: 1
+*modeButton1.shadowThickness: 1
+*modeButton0.borderWidth: 0
+*modeButton1.borderWidth: 0
+*modeButton0.internalWidth: 3
+*modeButton1.internalWidth: 3
+*modeButton0.internalHeight: 1
+*modeButton1.internalHeight: 1
+
+xrus.form.marginWidth:   0
+xrus.form.marginHeight:  0
+xrus.form.traversalOn:  false
+
+xrus.form.hSpace: 0
+xrus.form.vSpace: 0
+!xrus.form.borderWidth: 0
+
+*modeButton0.leftAttachment:	attach_form
+*modeButton0.rightAttachment:	attach_form
+*modeButton0.topAttachment:	attach_form
+*modeButton0.bottomAttachment:	attach_form
+*modeButton1.leftAttachment:	attach_form
+*modeButton1.rightAttachment:	attach_form
+*modeButton1.topAttachment:	attach_form
+*modeButton1.bottomAttachment:	attach_form
+
+*modeButton0.resizable: false
+*modeButton1.resizable: false
+
+*form.shadowThickness: 0
+
+*menu*exit.labelString:    Exit
+*menu*exit.label:          Exit
+*menu*props.labelString:   Properties...
+*menu*props.label:         Properties...
+*menu*altmap.labelString:  Alternate maps
+*menu*altmap.label:        Alternate maps
+*menu*lock.labelString:    Lock screen
+*menu*lock.label:          Lock screen
+
+*XmTextField.fontList:  -*-courier-bold-r-*-*-14-*-*-*-m-*
+
+*props.title: Xrus properties
+
+*props*locker_def.labelString: Default
+*props*locker_def.bottomAttachment: attach_form
+*props*locker_def.rightAttachment: attach_form
+*props*locker_def.fontList: -*-times-bold-r-*-*-12-*
+
+*props*locker_test.labelString: Test
+*props*locker_test.bottomAttachment: attach_form
+*props*locker_test.rightAttachment: attach_widget
+*props*locker_test.rightWidget:   locker_def
+*props*locker_test.fontList: -*-times-bold-r-*-*-12-*
+
+*props*locker.maxLength:   255
+*props*locker.bottomAttachment: attach_widget
+*props*locker.bottomWidget:   locker_def
+*props*locker.leftAttachment:    attach_form
+*props*locker.rightAttachment:   attach_form
+
+*props*locker_label.bottomAttachment:  attach_widget
+*props*locker_label.bottomWidget: locker
+*props*locker_label.bottomOffset: 0
+*props*locker_label.leftAttachment: attach_form
+*props*locker_label.fontList: -*-times-medium-r-*-*-12-*
+*props*locker_label.labelString: Locking command
+
+*props.form.horizontalSpacing:   6
+*props.form.verticalSpacing:     6
+
+*props*frame1.form1.horizontalSpacing: 6
+*props*frame1.form1.verticalSpacing: 6
+
+*props*frame1.leftAttachment: attach_form
+*props*frame1.rightAttachment: attach_form
+*props*frame1.topAttachment: attach_form
+
+*props*allow_locker.labelString: Locking
+*props*allow_locker.leftAttachment: attach_form
+*props*allow_locker.topAttachment: attach_form
+*props*allow_locker.bottomAttachment: attach_widget
+*props*allow_locker.bottomWidget: locker_label
+
+*props*autolock_delay.topAttachment: attach_form
+*props*autolock_delay.leftAttachment: attach_widget
+*props*autolock_delay.leftWidget: allow_locker
+*props*autolock_delay.rightAttachment: attach_form
+*props*autolock_delay.bottomAttachment: attach_widget
+*props*autolock_delay.bottomWidget: locker_label
+*props*autolock_delay.minimum: 1
+*props*autolock_delay.maximum: 120
+*props*autolock_delay.orientation: horizontal
+*props*autolock_delay.showValue: True
+*props*autolock_delay.titleString: Minutes
+*props*autolock_delay.width: 300
+*props*autolock_delay.height: 55
+
+*props*frame2.leftAttachment: attach_form
+*props*frame2.rightAttachment: attach_form
+*props*frame2.topAttachment: attach_widget
+*props*frame2.topWidget: frame1
+
+*props*form2.horizontalSpacing: 6
+*props*form2.verticalSpacing: 6
+
+*props*use_bell.leftAttachment: attach_form
+*props*use_bell.rightAttachment: attach_form
+*props*use_bell.topAttachment: attach_form
+*props*use_bell.labelString: Bell when switching
+*props*use_bell.alignment: alignment_beginning
+
+*props*switch_keys_label.leftAttachment: attach_form
+*props*switch_keys_label.topAttachment: attach_widget
+*props*switch_keys_label.topWidget: use_bell
+*props*switch_keys_label.fontList: -*-times-medium-r-*-*-12-*
+*props*switch_keys_label.labelString: Switch key combination
+
+*props*switch_keys.leftAttachment: attach_form
+*props*switch_keys.rightAttachment: attach_form
+*props*switch_keys.topAttachment: attach_widget
+*props*switch_keys.topWidget: switch_keys_label
+*props*switch_keys.topOffset: 0
+*props*switch_keys.maxLenght: 40
+
+*props*to_lat_keys_label.leftAttachment: attach_form
+*props*to_lat_keys_label.topAttachment: attach_widget
+*props*to_lat_keys_label.topWidget: switch_keys
+*props*to_lat_keys_label.fontList: -*-times-medium-r-*-*-12-*
+*props*to_lat_keys_label.labelString: Lat mode key combination
+
+*props*to_lat_keys.leftAttachment: attach_form
+*props*to_lat_keys.rightAttachment: attach_form
+*props*to_lat_keys.topAttachment: attach_widget
+*props*to_lat_keys.topWidget: to_lat_keys_label
+*props*to_lat_keys.topOffset: 0
+*props*to_lat_keys.maxLenght: 40
+
+*props*to_rus_keys_label.leftAttachment: attach_form
+*props*to_rus_keys_label.topAttachment: attach_widget
+*props*to_rus_keys_label.topWidget: to_lat_keys
+*props*to_rus_keys_label.fontList: -*-times-medium-r-*-*-12-*
+*props*to_rus_keys_label.labelString: Rus mode key combination
+
+*props*to_rus_keys.leftAttachment: attach_form
+*props*to_rus_keys.rightAttachment: attach_form
+*props*to_rus_keys.topAttachment: attach_widget
+*props*to_rus_keys.topWidget: to_rus_keys_label
+*props*to_rus_keys.topOffset: 0
+*props*to_rus_keys.maxLenght: 40
+
+*props*switch_for_one_keys_label.leftAttachment: attach_form
+*props*switch_for_one_keys_label.topAttachment: attach_widget
+*props*switch_for_one_keys_label.topWidget: to_rus_keys
+*props*switch_for_one_keys_label.fontList: -*-times-medium-r-*-*-12-*
+*props*switch_for_one_keys_label.labelString: Change mode for one next key
+
+*props*switch_for_one_keys.leftAttachment: attach_form
+*props*switch_for_one_keys.rightAttachment: attach_form
+*props*switch_for_one_keys.topAttachment: attach_widget
+*props*switch_for_one_keys.topWidget: switch_for_one_keys_label
+*props*switch_for_one_keys.topOffset: 0
+*props*switch_for_one_keys.maxLenght: 40
+
+*props*switch_keys_def.labelString: Default
+*props*switch_keys_def.rightAttachment: attach_form
+*props*switch_keys_def.topAttachment:  attach_widget
+*props*switch_keys_def.topWidget: switch_for_one_keys
+*props*switch_keys_def.bottomAttachment: attach_form
+*props*switch_keys_def.fontList: -*-times-bold-r-*-*-12-*
+
+*props*form4.leftAttachment: attach_form
+*props*form4.rightAttachment: attach_form
+*props*form4.bottomAttachment: attach_form
+*props*form4.topAttachment: attach_widget
+*props*form4.topWidget: frame2
+*props*form4.horizontalSpacing: 6
+*props*form4.verticalSpacing: 6
+
+*props*ok.labelString: OK
+*props*ok.showAsDefault: True
+*props*ok.leftAttachment: attach_form
+*props*ok.rightAttachment: attach_position
+*props*ok.rightPosition: 25
+*props*ok.bottomAttachment: attach_form
+
+*props*apply.labelString: Apply
+*props*apply.leftAttachment: attach_position
+*props*apply.leftPosition: 25
+*props*apply.rightAttachment: attach_position
+*props*apply.rightPosition: 50
+*props*apply.bottomAttachment: attach_form
+
+*props*save.labelString: Save
+*props*save.leftAttachment: attach_position
+*props*save.leftPosition: 50
+*props*save.rightAttachment: attach_position
+*props*save.rightPosition: 75
+*props*save.bottomAttachment: attach_form
+
+*props*cancel.labelString: Cancel
+*props*cancel.bottomAttachment: attach_form
+*props*cancel.rightAttachment: attach_form
+*props*cancel.leftAttachment: attach_position
+*props*cancel.leftPosition: 75
+
+!-------------------------------------------------------
+! Resources for Athena version of properties dialog
+! Vladimir Grachev, e-mail: vgrachev@ssau.ru
+!-------------------------------------------------------
+
+*props_xaw*title: Properties
+
+*props_xaw*locker_toggle.label: Locking
+
+*props_xaw*minutes_sb.length: 240
+
+*props_xaw*minutes_label.label: Minutes:\040
+*props_xaw*minutes_label.borderWidth: 0
+*props_xaw*minutes_label.justify: JustifyLeft
+
+*props_xaw*minutes_value_label.label: 30
+*props_xaw*minutes_value_label.borderWidth: 0
+*props_xaw*minutes_value_label.justify: JustifyLeft
+
+*props_xaw*minutes_label.borderWidth: 0
+*props_xaw*minutes_label.justify: JustifyLeft
+
+*props_xaw*command_label.label: Locking command
+*props_xaw*command_label.borderWidth: 0
+*props_xaw*command_label.justify: JustifyLeft
+
+*props_xaw*command_text.width: 305
+
+*props_xaw*test_button.label: Test
+
+*props_xaw*default1_button.label: Default
+
+*props_xaw*bell_toggle.label: Bell when switching
+
+*props_xaw*switch_label.label: Switch key combination
+*props_xaw*switch_label.borderWidth: 0
+*props_xaw*switch_label.justify: JustifyLeft
+
+*props_xaw*switch_text.width: 305
+
+*props_xaw*lat_label.label: Lat mode key combination
+*props_xaw*lat_label.borderWidth: 0
+*props_xaw*lat_label.justify: JustifyLeft
+
+*props_xaw*lat_text.width: 305
+
+*props_xaw*rus_label.label: Rus mode key combination
+*props_xaw*rus_label.borderWidth: 0
+*props_xaw*rus_label.justify: JustifyLeft
+
+*props_xaw*rus_text.width: 305
+
+*props_xaw*switch_for_one_keys_label.label: Change mode for one next key
+*props_xaw*switch_for_one_keys_label.borderWidth: 0
+*props_xaw*switch_for_one_keys_label.justify: JustifyLeft
+
+*props_xaw*switch_for_one_keys.width: 305
+
+*props_xaw*default2_button.label: Default
+
+*props_xaw*ok_button.label: Ok
+
+*props_xaw*apply_button.label: Apply
+
+*props_xaw*save_button.label: Save
+
+*props_xaw*cancel_button.label: Cancel
+
+! Geometry
+*props_xaw*locker_toggle.left: ChainLeft
+*props_xaw*locker_toggle.right: ChainLeft
+
+*props_xaw*minutes_sb.fromHoriz: locker_toggle
+*props_xaw*minutes_sb.left: ChainLeft
+*props_xaw*minutes_sb.right: ChainRight
+
+*props_xaw*minutes_label.fromHoriz: locker_toggle
+*props_xaw*minutes_label.fromVert: minutes_sb
+*props_xaw*minutes_label.left: ChainLeft
+*props_xaw*minutes_label.right: ChainLeft
+
+*props_xaw*minutes_value_label.fromHoriz: minutes_label
+*props_xaw*minutes_value_label.fromVert: minutes_sb
+*props_xaw*minutes_value_label.left: ChainLeft
+*props_xaw*minutes_value_label.right: ChainLeft
+
+*props_xaw*command_label.fromVert: minutes_label
+*props_xaw*command_label.left: ChainLeft
+*props_xaw*command_label.right: ChainLeft
+
+*props_xaw*command_text.fromVert: command_label
+*props_xaw*command_text.left: ChainLeft
+*props_xaw*command_text.right: ChainLeft
+
+*props_xaw*test_button.fromVert: command_text
+*props_xaw*test_button.left: ChainLeft
+*props_xaw*test_button.right: ChainLeft
+
+*props_xaw*default1_button.fromHoriz: test_button
+*props_xaw*default1_button.fromVert: command_text
+*props_xaw*default1_button.left: ChainLeft
+*props_xaw*default1_button.right: ChainLeft
+
+*props_xaw*bell_toggle.fromVert: default1_button
+*props_xaw*bell_toggle.left: ChainLeft
+*props_xaw*bell_toggle.right: ChainLeft
+
+*props_xaw*switch_label.fromVert: bell_toggle
+*props_xaw*switch_label.left: ChainLeft
+*props_xaw*switch_label.right: ChainLeft
+
+*props_xaw*switch_text.fromVert: switch_label
+*props_xaw*switch_text.left: ChainLeft
+*props_xaw*switch_text.right: ChainRight
+
+*props_xaw*lat_label.fromVert: switch_text
+*props_xaw*lat_label.left: ChainLeft
+*props_xaw*lat_label.right: ChainLeft
+
+*props_xaw*lat_text.fromVert: lat_label
+*props_xaw*lat_text.left: ChainLeft
+*props_xaw*lat_text.right: ChainRight
+
+*props_xaw*rus_label.fromVert: lat_text
+*props_xaw*rus_label.left: ChainLeft
+*props_xaw*rus_label.right: ChainLeft
+
+*props_xaw*rus_text.fromVert: rus_label
+*props_xaw*rus_text.left: ChainLeft
+*props_xaw*rus_text.right: ChainRight
+
+*props_xaw*switch_for_one_keys_label.fromVert: lat_text
+*props_xaw*switch_for_one_keys_label.left: ChainLeft
+*props_xaw*switch_for_one_keys_label.right: ChainLeft
+
+*props_xaw*switch_for_one_keys.fromVert: switch_for_one_keys_label
+*props_xaw*switch_for_one_keys.left: ChainLeft
+*props_xaw*switch_for_one_keys.right: ChainRight
+
+*props_xaw*default2_button.fromVert: switch_for_one_keys
+*props_xaw*default2_button.left: ChainLeft
+*props_xaw*default2_button.right: ChainLeft
+
+*props_xaw*ok_button.fromVert: default2_button
+
+*props_xaw*apply_button.fromHoriz: ok_button
+*props_xaw*apply_button.fromVert: default2_button
+
+*props_xaw*save_button.fromHoriz: apply_button
+*props_xaw*save_button.fromVert: default2_button
+
+*props_xaw*cancel_button.fromHoriz: save_button
+*props_xaw*cancel_button.fromVert: default2_button
+
+*props_xaw.error_shell.title: Error

@@ -1,0 +1,18 @@
+In Motif version of xrus you can install any two icons as indicators of
+current keyboard mode. To do so, place in .../app-defaults/Xrus or
+~/.Xdefaults the following resources:
+
+	Xrus*modeButton0.labelType: pixmap
+	Xrus*modeButton0.labelPixmap: /path/to/icon0
+	Xrus*modeButton1.labelType: pixmap
+	Xrus*modeButton1.labelPixmap: /path/to/icon1
+
+The icons for xruskb were contributed by:
+
+Document[LY].xpm	Sergei Naoumov <naoumov@augustus0.physics.unc.edu>
+
+rus.xpm,usa.xpm		Pavel Krasotin <pavel@innet.yaroslavl.su>
+
+kbrus.*,kbeng.*		me, Alexander V. Lukyanov <lav@yars.free.net>
+			Only for >256 colors. Drawn with gimp.
+kbrus8.xpm,kbeng8.xpm	same, but number of colors reduced for 8-bit displays.

@@ -1,0 +1,26 @@
+/* XPM */
+static char * usa_xpm[] = {
+/* width height ncolors cpp [x_hot y_hot] */
+"27 17 3 1 0 0",
+/* colors */
+" 	c #10100000BDBD",
+".	s iconColor3	m black	c red",
+"X	s iconColor2	m white	c white",
+/* pixels */
+"              .............",
+" X X X X X X  XXXXXXXXXXXXX",
+"              .............",
+"  X X X X X X XXXXXXXXXXXXX",
+"              .............",
+" X X X X X X  XXXXXXXXXXXXX",
+"              .............",
+"  X X X X X X XXXXXXXXXXXXX",
+"              .............",
+"XXXXXXXXXXXXXXXXXXXXXXXXXXX",
+"...........................",
+"XXXXXXXXXXXXXXXXXXXXXXXXXXX",
+"...........................",
+"XXXXXXXXXXXXXXXXXXXXXXXXXXX",
+"...........................",
+"XXXXXXXXXXXXXXXXXXXXXXXXXXX",
+"..........................."};

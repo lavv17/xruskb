@@ -1,0 +1,180 @@
+Version 1.10.0
+
+* support for 8 column key maps added (by Tobias Ernst). This can be useful
+  for German/Russian keyboard maps.
+
+Version 1.9.3
+
+* fixed changing to alternative maps in russian mode.
+
+Version 1.9.2
+
+* fixed *-cyr.xmm key maps. (Cyrillic_JE should actually be Cyrillic_IE)
+
+Version 1.9.1
+
+* fixed bug biting when one changes "Switch for one next key" in props.
+
+Version 1.9.0
+
+* Added key combination for switching to other mode for one next key.
+  Use *switchForOneKeys resource or properties sheet.
+* Added 16-color icons kbrus8.xpm, kbeng8.xpm for 8-bit displays.
+
+Version 1.8.2
+
+* adjust buttons after setting icon window (helps with wmaker)
+* added README.WindowMaker, Xrus.wmaker
+* added icons for wmaker (kbrus.xpm,kbrus.tiff,kbeng.xpm,kbeng.tiff)
+
+Version 1.8.1
+
+* compilation with Xaw fixed
+* add -R on solaris again
+
+Version 1.8.0
+
+* include a hacked version of xmodmap, which checks only selected
+  key map columns to translate KeySym to KeyCodes. This fixes problems
+  with switching from jcuken to yawerty.
+* add *xmodmapProgram resource, default - BINDIR/xrusmodmap
+
+Version 1.7.1
+
+* set WM_COMMAND to original argv with options
+* don't select PointerMotionMask on wm windows, this fixes bug with
+  WindowMaker and sliding menus
+* fix bug with Xaw, actually no icon was shown if it was not selected
+  explicitly via --with-toolkit=Xaw
+
+Version 1.7.0
+
+* added Window Maker support (-wmaker option)
+* added support for display in window manager icon (-wmicon option)
+* fixed coredump in case of broken X connection (thanks to Oleg Makarenko
+  <oleg@elbim.ru>)
+
+Version 1.6.0
+
+* properties sheet in Xaw (by Vladimir Grachev <vgrachev@ssau.ru>)
+* configure --with-toolkit={motif,xaw,none} to select toolkit explicitly
+* fixed configure to quote CC and CFLAGS properly
+* fixed Makefile: don't compile alloca.c if not needed
+
+Version 1.5.3
+
+* keymaps/ reorganized
+* use 'long' for MWM_HINTS (this is for 64-bit platforms)
+* fix locker start: unblock SIGALARM (Serguei Miridonov <mirsev@cicese.mx>)
+
+Version 1.5.2
+
+* automake used
+* corrected order of X libraries so that static linking would work
+* changed keymaps to clear some keys first so they don't make conflicts
+* install keymaps and icons to ${prefix}/share/xruskb
+* search ${prefix}/share/xruskb for keymaps, if not found in cwd
+* --version, --help options; start quietly
+* check keymap after a delay after load (fixes wrong error message)
+
+Version 1.5.1
+
+* all national keysym's are now supported (including Cyrillic_*)
+* directory structure changed: made directories keymaps, icons
+* added two icon sets to distribution
+* added keymaps with native X11 cyrillic keysyms (not tested)
+
+Version 1.5.0
+
+* event request algorithm changed (again). Resource *recheckTime added
+  to control the new thing.
+* man page written
+
+Version 1.4.2
+
+* -lintl for SCOv4.2
+* some fixes for native compiler of HP/UX
+* altmap should work for Xaw case (Alexander Pukhov
+  <pukhov@theory.npi.msu.su>)
+* english documentation and README added
+
+Version 1.4.1
+
+* some configure problems fixed
+* xrus failed to start in some circumstances (...arg out of range...)
+* now xrus actually compiles without alloca
+
+Version 1.4.0
+
+* sometimes xrus complied about non-russion keymap when the keymap
+  was loaded from xrus itself via parameter or *xmodmap.
+* jcuken-*.xmm fixed. Sometimes they replaced 6 and 7 with , and .
+* configure --with-Xaw, now the button and menu can be drawn with Xaw.
+  Properties sheet is not realized with Xaw yet.
+* optional CapsLock emulation to allow input capital russian letters.
+  Unfortunately, many X servers can't highlight the capslock led
+  without real CapsLock pressed.
+
+Version 1.3.4
+
+* fixed setting minimum/maximum size for Properties
+* workaround for CDE bug - xrus was restored with geometry 0x0
+* NEW! set temporary lat mode when Control is pressed.
+* optimized keymap transfers (less in half)
+* added *alwaysOnTop
+* another change in selecting input algorithm - sometimes we loose
+  keyboard events (in CDE).
+* added *alwaysMapped
+
+Version 1.3.3
+
+* removed fixing size of the icon
+* fixed to compile on atexit-less systems (SunOS)
+* changed highlightThickness of the mode buttons to 0
+* set WM_COMMAND for session managers
+* improved 'make install'
+* now xrus uses 'RUS' and font 'times' for the icon
+* added resource *adjustModeButtons
+
+Version 1.3.2
+
+* fixed alloca to work on AIX compiler (and on systems without alloca too)
+* added ability to compile without motif
+* added koi8x16.bdf to distribution
+* added options +/-icon to turn off/on the indicating icon
+
+Version 1.3.1
+
+* fixed a typo in jcuken-iso-xrus.xmm
+* fixed a bug introduced by 1.3.0 in xrus presence checking
+  (reported by Andrew S. Bogatyirev)
+* changed Makefile to compile with usual make
+
+Version 1.3.0
+
+* xrus is sencible to user modmap changing now
+* added support for 'switch to rus/lat' keys
+* added ability to load alternate modmaps from popup menu
+* fixed two little bugs reported by "Andrew S. Bogatyirev (Soft Eng)"
+  <abs@opentech.olvit.iasnet.ru>
+* added a workaround for SGI bug/feature, which caused modifier keys
+  fail to work
+* fixed a bug showing itself in Indigo Magic popup menus.
+* added several keyboard maps into distribution
+
+Version 1.2.3
+
+* fixed keyboard handling with windows not requested keyboard input
+* documentation improvement
+
+Version 1.2.2
+
+* fixed some portability problems
+* NOT ported to FreeBSD with lesstif, probably due to lesstif bugs.
+* autoconf used
+* fixed muliscreen bug (reported by dima@elvis.msk.su (Dima Antipov))
+* added ability to use a led for indication
+
+Version 1.2.1
+
+* this is the first public release

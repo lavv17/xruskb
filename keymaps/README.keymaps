@@ -1,0 +1,17 @@
+The keymaps distributed with xruskb have two basic layouts (jcuken and
+yawerty), and five cyrillic codings (X11 keysyms, koi8, iso5, cp866
+cp1251). That makes ten different keymaps.
+
+The right coding is of course X11 keysyms, but they do not work most
+of time. This is probably because only few X11 programs call
+XtSetLanguageProc and setlocale.
+
+About M4: I used this preprocessor to reduce duplication. That way, I
+have only 4 files with codings, 2 files with layouts and several
+really small supplementary files. You do not have to have M4, because
+the generated keymaps are included in the distribution.
+
+Thanks to: Serge Vakulenko <vak@kiae.su> for original russian keymaps,
+and Dima Antipov <dima@elvis.msk.su> for jcuken-cp1251 keymap.
+
+   Alexander V. Lukyanov <lav@yars.free.net>

@@ -1,0 +1,259 @@
+   Keyboard switch and indicator Xrus (Version 1.9.0)
+   ==================================================
+
+   Program description
+   ~~~~~~~~~~~~~~~~~~~
+   The main purpose of this program  is to switch keyboard mode
+for different  layouts, for example  latin and  russian layouts
+(RUS/LAT). It  is possible to tune  the program to use  any two
+layouts, it is needed just to have proper modmap loaded.
+   To  compile the  program  it is  recommanded  to have  Motif
+library. You  can also build it  with Xaw, Lesstif  and without
+widget  library,  but  in  the last  case  you  lose  some  GUI
+functionality.
+   The method of the program operation is very simple - it just
+gets  all  keyboard  events  and  when  a  particular  keyboard
+combination  is   pressed  it   switches  keyboard   layout  by
+exchanging columns 1,2 and 3,4 of keyboard map.
+   By  default,  Xrus  uses   Shift_L+Shift_R  combination  for
+switching. You can  tune it to use any  combination. Also, Xrus
+switch  the keyboard  when  you press  the  button (icon)  with
+mouse. You can specify keys for non-triggering switch too.
+   As side effect  of getting all keyboard  events, Xrus serves
+as autolock  also. For  this to  actually work,  it gets  mouse
+events also. When timeout expires, it launches a locker.
+
+   How to start Xrus
+   ~~~~~~~~~~~~~~~~~
+   For Xrus to  work, you should have a keyboard  map with four
+columns and  with 8-bit characters.  You can load  the keyboard
+map in different ways: before starting xrus, by giving the name
+of file  with keyboard map  on the command  line of xrus  or by
+setting X property `Xrus*xmodmap' to the name for that file.
+
+   Usually you just place these commands in .xinitrc:
+
+   xmodmap jcuken-koi8.xmm
+   xrus
+
+   OR
+
+   xrus jcuken-koi8.xmm
+
+   OR just `xrus', if you have set somewhere in properties:
+   Xrus*xmodmap: jcuken-koi8.xmm
+
+   Xrus first looks  for the keymap in  current directory, then
+in $prefix/share/xruskb, then  appends .xmm and looks  again in
+the directory.
+
+   The keyboard map should have four columns, the first two are
+usually  contain plain  latin  letters,  the two  next  contain
+national letters (e.g. russian).
+   It   is    recommended   to   place   Xrus.ad    to   system
+.../app-defaults with the name `Xrus'.  It is not required, but
+if you will to change some resources it is convinient to have a
+file  with defaults  and comments.  Don't forget  to delete  or
+replace the file if you had an old version installed.
+
+   Own resources of Xrus
+   ~~~~~~~~~~~~~~~~~~~~~
+   Name           Type        Default     Corresponding option
+   -------------- ----------- ----------- --------------------
+   *autolock      boolean     false       -autolock
+   *locker        string      xlock       -locker <command>
+   *timeout       int         30          -timeout <value>
+   *useBell       boolean     false       -bell,+bell
+   *xmodmap       string      ""          <filename>
+   *switchKeys    string      Shift_L+Shift_R   none
+   *toLatKeys     string      ""          none
+   *toRusKeys     string      ""          none
+   *switchForOneKeys string   ""          none
+   *led           int         0           -led <num>
+   *altMaps       string      ""          none
+   *icon          boolean     true        -icon,+icon
+   *adjustModeButtons boolean true        none
+   *alwaysOnTop   boolean     false       none
+   *alwaysMapped  boolean     true        none
+   *capsLockEmu   boolean     false       none
+   *capsLockLed   int         0           none
+   *recheckTime   int         1500        none
+   *noFork        boolean     false       -nofork
+   *wMaker        boolean     false       -wmaker
+   *wmIcon        boolean     false       -wmicon
+   *xmodmapProgram string     BINDIR/xrusmodmap
+
+   timeout is measured in minutes.
+   The option  -bell turns  on the  bell when  switching, +bell
+turns it off.
+   switchKeys, toLatkeys  and toRusKeys  controls the  keyboard
+combinations for  switching and  have format:  <Key>+<Key>+...,
+where Key - standard X key name from keysymdef.h without prefix
+XK_.
+   *switchForOneKeys sets key combination for changing mode for
+one next key. The syntax is the same as in switchKeys.
+   -led defines  the number of  keyboard led for  keyboard mode
+indication. 0 means none.
+   *altMaps  defines a  list  of  file names  with  alternative
+keyboard maps.  If you  want to use  it, define  also resources
+*altmapX.labelString, where X - the  number of file in *altMaps
+starting  with 0.  If  you have  compiled  Xrus  with Xaw,  use
+resources *altmapX.label instead. The strings  will be shown in
+menu then.
+   *icon and -+icon determine whether show the icon (button) on
+the screen.
+   If *adjustModeButtons  is True,  then the  icon size  is the
+same in both states.
+   If *alwaysOnTop is True, then the icon will be floating over
+other windows.
+   If *alwaysMapped is True, then Xrus will try to map the icon
+when window  manager tries to unmap  it. (it seems not  to work
+with fvwm, but works with mwm/dtwm)
+   When  '*capsLockEmu:  true'  Xrus  emulates  the  effect  of
+CapsLock CapsLock is removed from the list of modifiers.
+   *capsLockLed  sets the  number of  keyboard led  to use  for
+CapsLock indication. It is used only when '*capsLockEmu: true'.
+   *recheckTime  sets  time interval  in  milliseconds  between
+window  mapping  and  rechecking  of event  mask  of  the  main
+application. This  is useful when  some application  first asks
+for an  event and then  withdraws its request,  expecting event
+propagation to work.  This situation is quite rare,  and X does
+not provide an event on change of event mask.
+   *noFork disables fork to background on startup.
+   *wMaker (and option  -wmaker) selects display in  appicon of
+Window Maker window manager.
+   *wmIcon selects display  in window manager's icon  for xrus.
+In this case you won't be able to click on xrus' icon to switch
+or call  menu, because window  managers usually trap  clicks to
+their icons.
+   *xmodmapProgram specifies  program to  use for  keyboard map
+loading.
+
+   Dynamic parameters change
+   ~~~~~~~~~~~~~~~~~~~~~~~~~
+   When pressing  the icon with  third (right) mouse  button, a
+popup menu  is shown. From  there, you  can lock screen,  go to
+properties  sheet  or  to  terminate   the  program.  From  the
+properties sheet you can save the properties to "~/.xrus".
+
+   Virtual Window Managers (VWM)
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   When using  VWM, it is useful  to stick the icon  to screen.
+You can do it by tweeking VWM resources.
+   Xrus can  try to map  itself back  when VWM unmaps  it (when
+*alwaysMapped: true) It works with  mwm/dtwm, but does not with
+fvwm. It seems fvwm ignores MapRequestEvent.
+
+   Problems with xlock
+   ~~~~~~~~~~~~~~~~~~~
+   If you started xlock when  being in alternate keyboard mode,
+you can have troubles with typing  your password. To avoid this
+situation, you can use one of these methods:
+   1. Always launch xlock from xrus.
+   2. Allocate some key in keyboard map to serve as Mod2. Newer
+X servers require Mode_switch to be present in keyboard map.
+   3. Replace  xlock with script  which loads proper  latin map
+and then launches original xlock.
+
+   Problems with some other programs
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   xv - loads keyboard map only once when starting (ignores map
+change).
+   scoterm - tries  to emulate scan-codes, but  can't for 8-bit
+letters. You can try these resources:
+
+   scoterm*keyboard:       usa
+   scoterm*charset:        iso8859
+   scoterm*scancodesOn:    false
+
+   Some  programs   may  expect   event  propagation   to  work
+precicely, which  cannot be achieved  absolutely with  Xrus. If
+keyboard or  mouse work  unusually with  some application  when
+Xrus  is  started  before  the  application,  try  to  increase
+*recheckTime resource, but the default value should be enough.
+
+   Where is the last version?
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ftp://ftp.yars.free.net/pub/software/unix/X11/xruskb-A.B.C.tar.gz
+   ftp://ftp.relcom.ru/pub/x11/cyrillic/xruskb-A.B.C.tar.gz
+
+   Packages  of Xrus  for Solaris,  created  by Dmitri  Antipov
+<dima@elvis.msk.su>:
+   ftp://ftp.elvis.ru/pub/sun/Solaris/             SPARC
+   ftp://ftp.elvis.ru/pub/sun/Solaris/x86/         Intel
+   OR
+   http://ftp.elvis.ru/ftp/pub/sun/Solaris/
+   http://ftp.elvis.ru/ftp/pub/sun/Solaris/x86/
+
+   Widget tree (for Motif-version)
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ApplicationShell(xrus)
+   |
+   +-XmForm(form)
+     |
+     +-XmPushButton(modeButton0)
+     +-XmPushButton(modeButton1)
+
+   XmMenuShell()
+   |
+   +-XmRowColumn(menu)
+     |
+     +-XmPushButton(lock)
+     +-XmPushButton(props)
+     +-XmCascadeButton(altmap) {not always created}
+     +-XmPushButton(exit)
+
+   XmMenuShell()
+   |
+   +-XmRowColumn(altmap_menu)
+     |
+     +-XmPushButton(altmap0)
+     ...
+     +-XmPushButton(altmapN)
+
+   XmDialogShell(props)
+   |
+   +-XmForm(form)
+     |
+     +-XmFrame(frame1)
+     | |
+     | +-XmForm(form1)
+     |   |
+     |   +-XmToggleButton(allow_locker)
+     |   +-XmScale(autolock_delay)
+     |   +-XmLabel(locker_label)
+     |   +-XmTextField(locker)
+     |   +-XmPushButton(locker_test)
+     |   +-XmPushButton(locker_def)
+     |
+     +-XmFrame(frame2)
+     | |
+     | +-XmForm(form2)
+     |   |
+     |   +-XmToggleButton(use_bell)
+     |   +-XmLabel(switch_keys_label)
+     |   +-XmTextField(switch_keys)
+     |   +-XmLabel(to_lat_keys_label)
+     |   +-XmTextField(to_lat_leys)
+     |   +-XmLabel(to_rus_keys_label)
+     |   +-XmTextField(to_rus_keys)
+     |   +-XmPushButton(switch_keys_def)
+     |
+     +-XmForm(form4)
+       |
+       +-XmPushButton(ok)
+       +-XmPushButton(cancel)
+       +-XmPushButton(apply)
+       +-XmPushButton(save)
+
+   Author
+   ~~~~~~
+   Alexander V. Lukyanov
+   e-mail: lav@yars.free.net
+   paper-mail: Alexander V. Lukyanov, Aviatorov st. 80-45,
+               Yaroslavl 150051, Russia
+
+   You  are  allowed  to redistribute  or  modify  the  program
+according  to GNU  General Public  Licence  (See COPYING).  The
+program  is distributed  in the  hope  it will  be useful,  but
+without any warranty.

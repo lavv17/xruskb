@@ -1,0 +1,6 @@
+Q: I've installed xruskb and it works, but I don't see russian letters.
+A: You have to tune your applications to use proper russian fonts.
+   See Cyrillic-HOWTO at ftp://sunsite.unc.edu/pub/Linux/docs/HOWTO
+   (it is not only for linux)
+
+Q:

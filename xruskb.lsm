@@ -1,0 +1,22 @@
+Begin3
+Title:		Xruskb - X keyboard switcher/autolock
+Version:	1.9.3
+Entered-date:	16JAN99
+Description:	Xruskb allows switching of two keyboard layouts
+		on any particular key combination, e.g. two shifts.
+		It maintains a small window with current state indicator.
+		It can also serve as autolock. This all is done via
+		catching keyboard and mouse X events from (almost) all
+		windows. Has Motif, Xaw and bare compilation modes,
+		extensive tuning by X resources. State indicator can
+		be placed in WindowMaker's appicon.
+Keywords:	X11, keyboard, national
+Author:		lav@yars.free.net (Alexander V. Lukyanov)
+Maintained-by:	lav@yars.free.net (Alexander V. Lukyanov)
+Primary-site:	ftp.yars.free.net /pub/software/unix/X11
+		130 kB xruskb-1.9.3.tar.gz
+Alternate-site:	ftp.relcom.ru /pub/x11/cyrillic
+Alternate-site:	sunsite.unc.edu /pub/Linux/X11/xutils
+Platforms:	Unix, X11, Motif or Xaw or Lesstif
+Copying-policy: GNU GPL
+End

@@ -1,0 +1,35 @@
+!       Key            Base         Shift       Rus	ShiftRus
+!---------------------------------------------------------------
+keysym  q            = q            Q           Cyrillic_ya	Cyrillic_YA
+keysym  w            = w            W           Cyrillic_ve	Cyrillic_VE
+keysym  e            = e            E           Cyrillic_ie	Cyrillic_IE
+keysym  r            = r            R           Cyrillic_er	Cyrillic_ER
+keysym  t            = t            T           Cyrillic_te	Cyrillic_TE
+keysym  y            = y            Y           Cyrillic_yeru	Cyrillic_YERU
+keysym  u            = u            U           Cyrillic_u	Cyrillic_U
+keysym  i            = i            I           Cyrillic_i	Cyrillic_I
+keysym  o            = o            O           Cyrillic_o	Cyrillic_O
+keysym  p            = p            P           Cyrillic_pe	Cyrillic_PE
+keysym  bracketleft  = bracketleft  braceleft   Cyrillic_sha	Cyrillic_SHA
+keysym  bracketright = bracketright braceright  Cyrillic_shcha	Cyrillic_SHCHA
+keysym  a            = a            A           Cyrillic_a	Cyrillic_A
+keysym  s            = s            S           Cyrillic_es	Cyrillic_ES
+keysym  d            = d            D           Cyrillic_de	Cyrillic_DE
+keysym  f            = f            F           Cyrillic_ef	Cyrillic_EF
+keysym  g            = g            G           Cyrillic_ghe	Cyrillic_GHE
+keysym  h            = h            H           Cyrillic_ha	Cyrillic_HA
+keysym  j            = j            J           Cyrillic_shorti	Cyrillic_SHORTI
+keysym  k            = k            K           Cyrillic_ka	Cyrillic_KA
+keysym  l            = l            L           Cyrillic_el	Cyrillic_EL
+keysym  z            = z            Z           Cyrillic_ze	Cyrillic_ZE
+keysym  x            = x            X           Cyrillic_softsign	Cyrillic_SOFTSIGN
+keysym  c            = c            C           Cyrillic_tse	Cyrillic_TSE
+keysym  v            = v            V           Cyrillic_zhe	Cyrillic_ZHE
+keysym  b            = b            B           Cyrillic_be	Cyrillic_BE
+keysym  n            = n            N           Cyrillic_en	Cyrillic_EN
+keysym  m            = m            M           Cyrillic_em	Cyrillic_EM
+keysym  backslash    = backslash    bar         Cyrillic_e	Cyrillic_E
+keysym  grave        = grave        asciitilde  Cyrillic_yu	Cyrillic_YU
+keysym  equal        = equal        plus        Cyrillic_che	Cyrillic_CHE
+keysym  3            = 3            numbersign  3        Cyrillic_hardsign
+keysym  4            = 4            dollar      4        Cyrillic_HARDSIGN

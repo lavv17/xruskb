@@ -1,0 +1,181 @@
+.TH XRUS 1 "08 Dec 1998"
+.SH NAME
+xrus - X localized keyboard switch and autolock
+.SH SYNOPSIS
+.B xrus
+.I [OPTIONS] [keyboard_map_file]
+.SH "DESCRIPTION"
+.B xrus
+is a X client that watches keyboard and mouse events and serves as localized
+keyboard switch and autolock.
+.P
+To switch the keyboard, it swaps 1,2 and 3,4 columns of the keyboard map.
+Thus for
+.B xrus
+to operate properly, keyboard map has to have four columns. If it
+does not,
+.B xrus
+terminates with error message. If
+.I keyboard_map_file
+is specified, xrus calls
+.B xmodmap
+to load the file as keyboard map. If the specified keymap file does not exist,
+.B xrus
+tries to find the keymap in \fI$prefix/share/xruskb/\fP and then
+tries to append \fI.xmm\fP to keymap name, also looking in that directory.
+.P
+By default,
+.B xrus
+switches the keyboard mode when left and right shifts are pressed simultaneously;
+it is possible to tune the key combinations either in resources or in the
+properties sheet.
+.P
+When a time period passed without keyboard and mouse events,
+.B xrus
+starts a locker, "xlock -remote" by default.
+.P
+To tune various parameters, to lock screen or terminate
+.B xrus,
+press third mouse button on the icon and select appropriate
+action from popup menu.
+
+.SH OPTIONS
+.TP
+.B {-|+}bell
+Turn on/off the bell when switching. You can also set this in properties
+or resources (*bell)
+.TP
+.B {-|+}icon
+Show/not show the icon with keyboard mode indication. Also in resources (*icon)
+.TP
+.B -led led_no
+Use keyboard led
+.I led_no
+to indicate keyboard mode. Resource *led
+.TP
+.B +led
+Don't use led for indication
+.TP
+.B {-|+}autolock
+Allow/disable autolock function
+.TP
+.B -locker "locker cmd"
+Specify locker command
+.TP
+.B -timeout sec
+Set autolock timeout
+.TP
+.B -nofork
+Don't fork to background. This is default for -wmaker option too.
+.TP
+.B -wmaker
+Display state in Window Maker appicon.
+.TP
+.B -wmicon
+Display state in window manager's icon for xrus. In this case you won't be
+able to click on xrus' icon to switch or call menu, because window managers
+usually trap clicks to their icons.
+
+.SH RESOURCES
+Here are described only Xrus' own resources, to change resources of
+widgets used look into their documentation and \fBxrus.doc\fP.
+Some useful resources can be seen in \fBXrus.ad\fP too.
+.TP
+.B *autolock
+(type boolean; default false; option -autolock) Specifies whether to
+use the autolock feature. This option can be changed in properties sheet.
+.TP
+.B *locker
+(type string; default "xlock -remote"; option -locker <command>)
+Specifies the locker to launch to lock screen.
+This option can be changed in properties sheet.
+.TP
+.B *timeout
+(type int; default 30; option -timeout <value>) Specifies the amount of
+minutes without keyboard and mouse activity before starting locker.
+This option can be changed in properties sheet.
+.TP
+.B *useBell
+(type boolean; default false; option -bell,+bell) Specifies whether to beep
+when switching keyboard mode.
+This option can be changed in properties sheet.
+.TP
+.B *xmodmap
+(type string; option <filename>) Specifies a file name to load with xmodmap
+at startup.
+.TP
+.B *switchKeys
+(type string; default Shift_L+Shift_R) Specifies key combination on which
+Xrus switches keyboard mode.
+This option can be changed in properties sheet.
+.TP
+.B *toLatKeys
+(type string) Specifies key combination on which Xrus sets latin (primary)
+keyboard mode.
+This option can be changed in properties sheet.
+.TP
+.B   *toRusKeys
+(type    string) Specifies key combination on which Xrus sets russian (secondary)
+keyboard mode.
+This option can be changed in properties sheet.
+.TP
+.B   *led
+(type int; option -led <num>) Specifies led number to light in secondary
+keyboard mode. 0 means none.
+.TP
+.B   *altMaps
+(type string) Defines a  list  of  file names  with  alternative
+keyboard maps.  If you  want to use  it, define  also resources
+*altmapX.labelString, where X - the  number of file in *altMaps
+starting  with  0.  If  you have compiled Xrus  with  Xaw,  use  resources
+*altmapX.label instead. The strings will be shown in menu then.
+.TP
+.B *icon
+(type boolean; default true; option -icon,+icon) Specifies whether to show
+the icon.
+.TP
+.B *adjustModeButtons
+(type boolean; default true) Specifies whether the  icon size  is the
+same in both states (true) or can differ (false).
+.TP
+.B *alwaysOnTop
+(type boolean; default false) Specifies whether the icon should float above
+other windows.
+.TP
+.B  *alwaysMapped
+(type  boolean; default true) Specifies whether to map the icon
+back when it is unmapped. This option works only with certain window
+managers (mwm, dtwm, ovwm, probably some other).
+.TP
+.B *capsLockEmu
+(type boolean; default false) Emulate capslock key. Useful when Xlib
+is not localized properly.
+.TP
+.B *capsLockLed
+(type int) Specifies which led to light when emulated capslock is pressed.
+0 means none.
+.TP
+.B *recheckTime
+(type int; default 1500)
+Sets  time interval  in  milliseconds  between
+window  mapping  and  rechecking  of event  mask  of  the  main
+application. This  is useful when  some application  first asks
+for an  event and then  withdraws its request,  expecting event
+propagation to work.  This situation is quite rare,  and X does
+not provide an event on change of event mask.
+.TP
+.B *wMaker
+(type bool; default false) Same as -wmaker option.
+.TP
+.B *wmIcon
+(type bool; default false) Same as -wmicon option.
+.TP
+.B *noFork
+(type bool; default false) Same as -nofork option.
+.TP
+.B *xmodmapProgram
+(type string; default BINDIR/xrusmodmap) Use specified
+program for keyboard map loading.
+
+.SH AUTHOR
+\fBxrus\fP was written by Alexander V. Lukyanov <lav@yars.free.net>.

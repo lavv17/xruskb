@@ -1,0 +1,19 @@
+   *  On some  systems  you may  also  want  to change  default
+background or delete it from Xrus.ad (e.g. on Dec Alpha)
+
+   * Run ./configure. It should find Motif library and headers.
+If Motif is not found, configure looks for Xaw library. If none
+of the  libraries were found, xrus  can still be  compiled, but
+you would lose the GUI. If you have Motif but want to save some
+memory, try 'configure --without-motif --without-Xaw'. You will
+not see the icon then, though.
+
+   * Run  make. If all  went ok,  type `make install'.  You may
+also  want to  copy  the file  Xrus.ad  to system  app-defaults
+directory,  renaming it  to Xrus,  although  the resources  are
+compiled in.
+
+   * If you  have troubles compiling the program,  feel free to
+write to me (lav@yars.free.net).  Please include your operating
+system  type/version,  the  compiler you  used,  precise  error
+messages.

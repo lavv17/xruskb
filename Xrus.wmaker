@@ -1,0 +1,11 @@
+! If your display is 8-bit deep, try kbeng8.xpm and kbrus8.xpm
+Xrus*modeButton0.labelType: pixmap
+Xrus*modeButton0.labelPixmap:        /usr/share/xruskb/kbeng.xpm
+Xrus*modeButton1.labelType: pixmap
+Xrus*modeButton1.labelPixmap:        /usr/share/xruskb/kbrus.xpm
+Xrus*modeButton0.shadowThickness: 0
+Xrus*modeButton0.marginHeight: 0
+Xrus*modeButton0.marginWidth: 0
+Xrus*modeButton1.shadowThickness: 0
+Xrus*modeButton1.marginHeight: 0
+Xrus*modeButton1.marginWidth: 0
