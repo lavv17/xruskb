@@ -1161,7 +1161,7 @@ fi
 
 PACKAGE=xruskb
 
-VERSION=1.15.1
+VERSION=1.15.2
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:1167: error: source directory already configured; run \"make distclean\" there first" >&5
