@@ -1,3 +1,10 @@
+Version 1.12.1 - 2000-02-03
+
+* Use XGetWMName/XSetWMName to alter window title (works on SGI).
+* Check input focus after window mapping (for SGI).
+* Create "Alternate maps" submenu by default with few maps.
+* Use medium helvetica font in menu.
+
 Version 1.12.0 - 2000-02-02
 
 * per-window keyboard state (-perwindow option and *perWindow resource)
