@@ -1,4 +1,4 @@
-   Keyboard switch and indicator Xrus (Version 1.13.0)
+   Keyboard switch and indicator Xrus (Version 1.12.0)
    ===================================================
 
    Program description
@@ -93,8 +93,6 @@ replace the file if you had an old version installed.
    *perWindow     boolean     false       -perwindow
    *titlePerWindow0 string    (LAT)       none
    *titlePerWindow1 string    (RUS)       none
-   *occupyAllDesks boolean    true        none
-   *keyLog        string      ""          -keylog
 
    timeout is measured in minutes.
    The option  -bell turns  on the  bell when  switching, +bell
@@ -147,9 +145,6 @@ primary and secondary mode accordingly.
 window and changing it on focus change.
    *titlePerWindow0 and *titlePerWindow1 specify  strings to be
 appended to each window title in per-window mode.
-   *occupyAllDesks makes  xrus to make  icon sticky.  Works for
-some window manager only.
-   -keylog specifies file name for key press logging.
 
    Besides xrus' own resources, there are a number of resources
 of standard widgets from Morif or Xaw libraries. In particular,

@@ -1,4 +1,4 @@
-! Xrus - russian keyboard for X (Version 1.13.0)
+! Xrus - russian keyboard for X (Version 1.12.0)
 ! Copyright (c) 1995-2000 by Alexander V. Lukyanov
 
 ! Some systems provide their own default background,
@@ -30,9 +30,6 @@
 *modeButton1.labelString:   RUS
 *modeButton0.label:   LAT
 *modeButton1.label:   RUS
-! title0/title1 are shown on icon/window title of xrus, handy for icewm.
-*title0: xrus:LAT
-*title1: xrus:RUS
 
 ! this option turns on saving keyboard state for each top level
 ! window and changing it on focus change.
@@ -83,18 +80,11 @@
 *altMaps: jcuken-cyr jcuken-koi8 jcuken-cp1251 \
           yawerty-cyr yawerty-koi8 yawerty-cp1251
 *altmap0.labelString: jcuken
-*altmap1.labelString: jcuken koi-8      (no locale)
-*altmap2.labelString: jcuken cp1251   (no locale)
+*altmap1.labelString: jcuken koi-8      (hack)
+*altmap2.labelString: jcuken cp1251   (hack)
 *altmap3.labelString: yawerty
-*altmap4.labelString: yawerty koi-8    (no locale)
-*altmap5.labelString: yawerty cp1251 (no locale)
-! same for Xaw.
-*altmap0.label: jcuken
-*altmap1.label: jcuken koi-8      (no locale)
-*altmap2.label: jcuken cp1251   (no locale)
-*altmap3.label: yawerty
-*altmap4.label: yawerty koi-8    (no locale)
-*altmap5.label: yawerty cp1251 (no locale)
+*altmap4.labelString: yawerty koi-8    (hack)
+*altmap5.labelString: yawerty cp1251 (hack)
 !...
 !*altmapN.labelString: N'th map
 
@@ -114,9 +104,6 @@
 !*recheckTime: 1500
 
 !*xmodmapProgram: xrusmodmap
-
-! Try to occupy all desktops. Works for some WM's only.
-!*occupyAllDesks: True
 
 *modeButton0.translations: #override <Btn3Down>: XrusMenuPopup()
 *modeButton1.translations: #override <Btn3Down>: XrusMenuPopup()
@@ -172,20 +159,20 @@ xrus.form.vSpace: 0
 *menu*lock.labelString:    Lock screen
 *menu*lock.label:          Lock screen
 
-*props*XmTextField.fontList:  -*-courier-bold-r-*-*-14-*-*-*-m-*
+*XmTextField.fontList:  -*-courier-bold-r-*-*-14-*-*-*-m-*
 
 *props.title: Xrus properties
 
 *props*locker_def.labelString: Default
 *props*locker_def.bottomAttachment: attach_form
 *props*locker_def.rightAttachment: attach_form
-*props*locker_def.fontList: -*-times-medium-r-*-*-12-*
+*props*locker_def.fontList: -*-times-bold-r-*-*-12-*
 
 *props*locker_test.labelString: Test
 *props*locker_test.bottomAttachment: attach_form
 *props*locker_test.rightAttachment: attach_widget
 *props*locker_test.rightWidget:   locker_def
-*props*locker_test.fontList: -*-times-medium-r-*-*-12-*
+*props*locker_test.fontList: -*-times-bold-r-*-*-12-*
 
 *props*locker.maxLength:   255
 *props*locker.bottomAttachment: attach_widget
@@ -301,7 +288,7 @@ xrus.form.vSpace: 0
 *props*switch_keys_def.topAttachment:  attach_widget
 *props*switch_keys_def.topWidget: switch_for_one_keys
 *props*switch_keys_def.bottomAttachment: attach_form
-*props*switch_keys_def.fontList: -*-times-medium-r-*-*-12-*
+*props*switch_keys_def.fontList: -*-times-bold-r-*-*-12-*
 
 *props*form4.leftAttachment: attach_form
 *props*form4.rightAttachment: attach_form
@@ -344,7 +331,6 @@ xrus.form.vSpace: 0
 !-------------------------------------------------------
 
 *props_xaw*title: Properties
-*props_xaw*iconName: Xrus Properties
 
 *props_xaw*locker_toggle.label: Locking
 
@@ -494,4 +480,3 @@ xrus.form.vSpace: 0
 *props_xaw*cancel_button.fromVert: default2_button
 
 *props_xaw.error_shell.title: Error
-*props_xaw.error_shell.iconName: Xrus Error

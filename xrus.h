@@ -40,8 +40,6 @@ typedef struct
    Boolean  per_window_state;
    String   titlePerWindow0;
    String   titlePerWindow1;
-   Boolean  occupyAllDesks;
-   String   keylog_file;
 } XrusRec;
 
 extern   XrusRec  AppData;
@@ -53,7 +51,6 @@ extern   char  DefaultToRusKeys[];
 extern   char  DefaultSwitchForOneKeys[];
 
 extern   Display        *disp;
-extern   Atom           wm_delete_window;
 extern   XtAppContext   app_context;
 
 #define	 StartArgs()		count=0

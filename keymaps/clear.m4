@@ -1,5 +1,5 @@
 
-! clear any extra bindings from some keys (they often make conflicts)
+! clear any russian bindings from some keys (they often make conflicts)
 keysym  grave	      = grave		asciitilde
 keysym	1	      = 1		exclam
 keysym	2	      = 2		at
