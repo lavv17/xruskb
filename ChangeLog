@@ -1,0 +1,9 @@
+2000-01-14  lav
+
+	* Xrus.ad: add title0 and title1 resources.
+	* xrus.c: alwaysMapped is now False by default as it caused problems
+	  with icewm; title0/title1 new resources; SetTitle new function;
+	  don't raise icon if it is in window manager's icon; call SetTitle
+	  on switching and initially.
+	
+2000-01-14  ChangeLog started.

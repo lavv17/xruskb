@@ -146,7 +146,7 @@ XtResource        resources[]=
          XtRImmediate,  (XtPointer)False        },
    {  "alwaysMapped","AutoMap",XtRBoolean,sizeof(Boolean),
          XtOffsetOf(XrusRec,alwaysMapped),
-         XtRImmediate,  (XtPointer)True         },
+         XtRImmediate,  (XtPointer)False	},
    {  "capsLockEmu","CapsLockEmu",XtRBoolean,sizeof(Boolean),
          XtOffsetOf(XrusRec,capsLockEmu),
          XtRImmediate,  (XtPointer)False        },
@@ -167,7 +167,13 @@ XtResource        resources[]=
             XtRImmediate,  (XtPointer)False     },
    {  "xmodmapProgram", "XmodmapProgram", XtRString, sizeof(String),
             XtOffsetOf(XrusRec,xmodmap_program),
-            XtRString,  BINDIR "/xrusmodmap"     },
+            XtRString,  BINDIR "/xrusmodmap"    },
+   {  "title0",	  "Title0",   XtRString,  sizeof(String),
+            XtOffsetOf(XrusRec,title0),
+            XtRString,  (XtPointer)0		},
+   {  "title1",	  "Title1",   XtRString,  sizeof(String),
+            XtOffsetOf(XrusRec,title1),
+            XtRString,  (XtPointer)0		},
 };
 
 XrmOptionDescRec  options[]=
@@ -444,6 +450,8 @@ void load_map_delayed(const char *map)
 #if TK!=TK_NONE
 void  RaiseButton()
 {
+   if(AppData.wm_icon || AppData.wmaker_icon)
+      return;
    XRaiseWindow(disp,XtWindow(top_level));
 }
 
@@ -452,6 +460,16 @@ void  RaiseButtonOnTimeout(XtPointer closure,XtIntervalId *id)
    (void)closure; (void)id;
    raise_tmout=-1;
    RaiseButton();
+}
+
+void  SetTitle(int n)
+{
+   const char *title=(n==0 ? AppData.title0 : AppData.title1);
+   if(title==0)
+      title="xrus";
+   XtSetArg(args[0],XtNtitle,title);
+   XtSetArg(args[1],XtNiconName,title);
+   XtSetValues(top_level,args,2);
 }
 
 /* shows proper indicator button */
@@ -478,6 +496,8 @@ void  ShowSwitchButton(void)
       XtSetValues(top_level,args,1);
 
       XtManageChild(switch_button[to_manage]);
+
+      SetTitle(to_manage);
 
       RaiseButton();
    }
@@ -1151,6 +1171,8 @@ int   main(int argc,char **argv)
    top_level=XtAppCreateShell("xrus",AppClass,applicationShellWidgetClass,disp,args,count);
 
    XtGetApplicationResources(top_level,&AppData,resources,XtNumber(resources),NULL,0);
+
+   SetTitle(0);
 
    /* replace pointer to constant string with pointer to our buffers */
    strcpy(LockerData,AppData.locker?AppData.locker:DefaultLocker);
