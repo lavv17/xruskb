@@ -1125,6 +1125,15 @@ void  MainLoop(void)
       case(FocusIn):
          QueryFocus();
          break;
+      case(FocusOut):
+      {
+         Window old=focus_window;
+         focus_window=0;
+         DelWindow(ev.xany.window);
+         AddWindow(ev.xany.window,False,1);
+         focus_window=old;
+         break;
+      }
       case(PropertyNotify):
          if(AppData.per_window_state && ev.xproperty.atom==XA_WM_NAME
          && ev.xproperty.state==PropertyNewValue)
@@ -1516,7 +1525,19 @@ int   main(int argc,char **argv)
    XtAddEventHandler(switch_button[1],VisibilityChangeMask,False,VisibilityChange,NULL);
 
    XrusMenuCreate();
+
 #endif /* !TK_NONE */
+
+   kbd_state_atom=XInternAtom(disp,"KBD_STATE",False);
+
+   XtRealizeWidget(top_level);
+
+   KeyboardStateInit();
+   InitCapsLockEmu();
+
+#if TK!=TK_NONE
+   /* Set various window properties. */
+   w=XtWindow(top_level);
 
    ol_decor_del_atom=XInternAtom(disp,"_OL_DECOR_DEL",False);
    ol_decor_del[0]=XInternAtom(disp,"_OL_DECOR_HEADER",False);
@@ -1525,46 +1546,66 @@ int   main(int argc,char **argv)
    wm_client_leader=XInternAtom(disp,"WM_CLIENT_LEADER",False);
    wm_delete_window=XInternAtom(disp,"WM_DELETE_WINDOW",False);
 
-   kbd_state_atom=XInternAtom(disp,"KBD_STATE",False);
-
-   XtRealizeWidget(top_level);
-
-   XChangeProperty(disp,XtWindow(top_level),ol_decor_del_atom,XA_ATOM,32,
+   XChangeProperty(disp,w,ol_decor_del_atom,XA_ATOM,32,
          PropModeReplace,(void*)ol_decor_del,2);
 
-   w=XtWindow(top_level);
-   XChangeProperty(disp,XtWindow(top_level),wm_client_leader,XA_WINDOW,32,
+   XChangeProperty(disp,w,wm_client_leader,XA_WINDOW,32,
          PropModeReplace,(void*)&w,1);
 
-#if TK!=TK_NONE
+#define WinStateAllWorkspaces  (1 << 0)   /* appears on all workspaces */
+#define WinStateMinimized      (1 << 1)   /* to iconbox,taskbar,... */
+#define WinStateMaximizedVert  (1 << 2)   /* maximized vertically */
+#define WinStateMaximizedHoriz (1 << 3)   /* maximized horizontally */
+#define WinStateHidden         (1 << 4)   /* not on taskbar if any, but still accessible */
+#define WinStateRollup         (1 << 5)   /* only titlebar visible */
+#define WinStateFixedPosition  (1 << 10)  /* fixed position on virtual desktop*/
+#define WinStateArrangeIgnore  (1 << 11)  /* ignore for auto arranging */
+#define WinStateWithdrawn      (1 << 31)  /* managed, but not available to user */
+
 if(AppData.occupyAllDesks)
 {  /* make the window global for all desktops */
    Atom win_state,sgi_desks_hints,sgi_desks_always_global;
    Atom kwm_win_sticky;
    long value;
    /* for gnome */
-   static long state[2]={1,63};
+   static long state[2]={WinStateAllWorkspaces|WinStateArrangeIgnore,63};
    win_state=XInternAtom(disp,"_WIN_STATE",False);
-   XChangeProperty(disp,XtWindow(top_level),win_state,XA_CARDINAL,32,
+   XChangeProperty(disp,w,win_state,XA_CARDINAL,32,
       PropModeReplace,(void*)state,2);
    /* for SGI */
    sgi_desks_hints=XInternAtom(disp,"_SGI_DESKS_HINTS",False);
    sgi_desks_always_global=XInternAtom(disp,"_SGI_DESKS_ALWAYS_GLOBAL",False);
    value=sgi_desks_always_global;
-   XChangeProperty(disp,XtWindow(top_level),sgi_desks_hints,XA_ATOM,32,
+   XChangeProperty(disp,w,sgi_desks_hints,XA_ATOM,32,
       PropModeReplace,(void*)&value,1);
    /* for KDE */
    value=1;
    kwm_win_sticky=XInternAtom(disp,"KWM_WIN_STICKY",False);
-   XChangeProperty(disp,XtWindow(top_level),kwm_win_sticky,kwm_win_sticky,32,
+   XChangeProperty(disp,w,kwm_win_sticky,kwm_win_sticky,32,
       PropModeReplace,(void*)&value,1);
-
 }
-#endif
-#if TK!=TK_MOTIF && TK!=TK_NONE
+
+#define WinHintsSkipFocus      (1 << 0)
+#define WinHintsSkipWindowMenu (1 << 1)
+#define WinHintsSkipTaskBar    (1 << 2)
+#define WinHintsGroupTransient (1 << 3)
+#define WinHintsDockHorizontal (1 << 6)   /* docked horizontally */
+
+{
+   Atom win_hints=XInternAtom(disp,"_WIN_HINTS",False);
+   long value[2];
+   value[0]=WinHintsSkipFocus|WinHintsSkipWindowMenu;
+   if(!AppData.wm_icon)
+      value[0]|=WinHintsSkipTaskBar;
+   value[1]=127;
+   XChangeProperty(disp,w,win_hints,XA_CARDINAL,32,
+      PropModeReplace,(void*)value,2);
+}
+
+#if TK!=TK_MOTIF
 {
    /* we have to emulate motif hints as we don't have Motif */
-   static long motif_hints[]={0x3, 0x24, 0x2, 0xffffffff, 0x4800002};
+   static long motif_hints[]={0x3, 0x24, 0x2, 0xffffffff, 0};
    Atom motif_hints_atom=XInternAtom(disp,"_MOTIF_WM_HINTS",False);
    XChangeProperty(disp,XtWindow(top_level),motif_hints_atom,motif_hints_atom,32,
          PropModeReplace,(void*)motif_hints,XtNumber(motif_hints));
@@ -1574,10 +1615,6 @@ if(AppData.occupyAllDesks)
 }
 #endif
 
-   KeyboardStateInit();
-   InitCapsLockEmu();
-
-#if TK!=TK_NONE
    if(AppData.adjustModeButtons)
    {
       Dimension w0,h0,w1,h1;
