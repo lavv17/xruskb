@@ -350,6 +350,7 @@ static void SaveModeForWindow()
          int title_len=prop.nitems;
 
          memcpy(new_title,prop.value,prop.nitems);
+	 new_title[prop.nitems]=0; /* for strcmp below */
          XFree(prop.value);
 
          if(title_len>old_len

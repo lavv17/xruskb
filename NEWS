@@ -1,3 +1,5 @@
+* Fixed a problem with -perwindow and multiple title additions.
+
 Version 1.12.1 - 2000-02-03
 
 * Use XGetWMName/XSetWMName to alter window title (works on SGI).
