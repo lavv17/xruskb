@@ -329,55 +329,60 @@ void  FixNewMode()
       NewMode|=TEMP_LAT;
 }
 
-static void SaveModeForWindow()
+static void SetTitleIndicator(Window w,int mode)
+{
+   XTextProperty prop;
+   char *new_title, *append, *old;
+   int old_len, append_len, title_len;
+
+   if((!AppData.titlePerWindow0    || !AppData.titlePerWindow1)
+   || (!AppData.titlePerWindow0[0] && !AppData.titlePerWindow1[0]))
+      return;
+
+   if(!XGetWMName(disp,w,&prop) || prop.format!=8)
+      return;
+
+   mode&=MODE;
+
+   append=mode?AppData.titlePerWindow1:AppData.titlePerWindow0;
+   old   =mode?AppData.titlePerWindow0:AppData.titlePerWindow1;
+   new_title=alloca(prop.nitems+256);
+   old_len=strlen(old);
+   append_len=strlen(append);
+
+   memcpy(new_title,prop.value,title_len=prop.nitems);
+   new_title[title_len]=0; /* for strcmp below */
+   XFree(prop.value);
+
+   if(title_len>old_len
+   && !strcmp(new_title+title_len-old_len,old))
+      title_len-=old_len;
+   else if(title_len>append_len
+   && !strcmp(new_title+title_len-append_len,append))
+      return;
+
+   if(title_len==0)
+   {
+      strcpy(new_title,"untitled");
+      title_len=strlen(new_title);
+   }
+   if(new_title[title_len-1]!=' ')
+      new_title[title_len++]=' ';
+   strcpy(new_title+title_len,append);
+   title_len+=append_len;
+
+   prop.nitems=title_len;
+   prop.value=new_title;
+   XSetWMName(disp,w,&prop);
+}
+
+static void SaveModeForWindow(Window w)
 {
    long m=Mode&SAVE_MASK;
-   if(focus_window==0 || !AppData.per_window_state)
+   if(w==0 || !AppData.per_window_state)
       return;
-   if( AppData.titlePerWindow0    && AppData.titlePerWindow1
-   && (AppData.titlePerWindow0[0] || AppData.titlePerWindow1[0]))
-   {
-      XTextProperty prop;
-      if(XGetWMName(disp,focus_window,&prop) && prop.format==8)
-      {
-         char *new_title=alloca(prop.nitems+256);
-         char *append=(Mode&MODE)?AppData.titlePerWindow1
-                                 :AppData.titlePerWindow0;
-         char *old=(Mode&MODE)?AppData.titlePerWindow0
-                              :AppData.titlePerWindow1;
-         int old_len=strlen(old);
-         int append_len=strlen(append);
-         int title_len=prop.nitems;
-
-         memcpy(new_title,prop.value,prop.nitems);
-	 new_title[prop.nitems]=0; /* for strcmp below */
-         XFree(prop.value);
-
-         if(title_len>old_len
-         && !strcmp(new_title+title_len-old_len,old))
-            title_len-=old_len;
-         else if(title_len>append_len
-         && !strcmp(new_title+title_len-append_len,append))
-            goto skip_title_change;
-
-         if(title_len==0)
-         {
-            strcpy(new_title,"untitled");
-            title_len=strlen(new_title);
-         }
-         if(new_title[title_len-1]!=' ')
-            new_title[title_len++]=' ';
-         strcpy(new_title+title_len,append);
-         title_len+=append_len;
-
-         prop.nitems=title_len;
-         prop.value=new_title;
-         XSetWMName(disp,focus_window,&prop);
-
-      skip_title_change:;
-      }
-   }
-   XChangeProperty(disp,focus_window,kbd_state_atom,XA_CARDINAL,32,
+   SetTitleIndicator(w,Mode);
+   XChangeProperty(disp,w,kbd_state_atom,XA_CARDINAL,32,
                    PropModeReplace,(void*)&m,1);
 }
 
@@ -475,20 +480,34 @@ void  SwitchKeyboard(int to)
    }
    Mode=to;
    if((from&SAVE_MASK) != (to&SAVE_MASK))
-      SaveModeForWindow();
+      SaveModeForWindow(focus_window);
    ShowSwitchButton();
+}
+
+static int GetKbdState(Window w)
+{
+   long *prop=0;
+   if(XGetWindowProperty(disp,w,kbd_state_atom,0L,256L,0,XA_CARDINAL,
+         &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
+        ==Success && type_ret==XA_CARDINAL && nitems_ret==1 && prop)
+   {
+      int ret=(prop[0]&SAVE_MASK);
+      XFree(prop);
+      return ret;
+   }
+   return -1;
 }
 
 static void SwitchKeyboardForWindow(Window w)
 {
-   long *prop=0;
+   int mode;
    focus_window=0;
-   if(XGetWindowProperty(disp,w,kbd_state_atom,0L,256L,0,XA_CARDINAL,
-         &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,(void*)&prop)
-        ==Success && type_ret==XA_CARDINAL && nitems_ret==1)
-      NewMode=(Mode&~SAVE_MASK)|(prop[0]&SAVE_MASK);
-   else
-      NewMode=Mode&~MODE;
+   if(w==0)
+      return;
+   mode=GetKbdState(w);
+   if(mode==-1)
+      mode=0;
+   NewMode=(Mode&~SAVE_MASK)|mode;
 
    NewMode&=~FOR_ONE;
    FixNewMode();
@@ -672,20 +691,26 @@ void  DelWindow(Window w)
    }
 }
 
-int   window_is_top_level(Window w)
+Bool  window_is_top_level(Window w)
 {
-   XTextProperty tprop;
-   if(XGetWMName(disp,w,&tprop) && tprop.value)
+   int num,i;
+   Atom *list=XListProperties(disp,w,&num);
+
+   if(!list)
+      return False;
+
+   for(i=0; i<num; i++)
    {
-      XFree(tprop.value);
-      return True;
+      if(list[i]==XA_WM_NAME
+      || list[i]==XA_WM_CLASS
+      || list[i]==XA_WM_COMMAND)
+      {
+         XFree(list);
+         return True;
+      }
    }
-   type_ret=None;
-   XGetWindowProperty(disp,w,XA_WM_CLASS,0L,0L,0,XA_STRING,
-         &type_ret,&format_ret,&nitems_ret,&bytes_after_ret,&prop);
-   if(prop)
-      XFree(prop);
-   return(type_ret!=None);
+   XFree(list);
+   return False;
 }
 
 int   is_wm_window(Window w)
@@ -697,11 +722,13 @@ int   is_wm_window(Window w)
    if(XQueryTree(disp,w,&root1,&parent,&children,&children_num))
    {
       is|=(parent==root1);
+#if 0
       for(i=0; !is && i<children_num; i++)
       {
          is|=window_is_top_level(children[i]);
       }
       XFree(children);
+#endif
    }
    return is;
 }
@@ -767,7 +794,7 @@ void  AddWindow(Window w,int tmout)
 	 mask|=PointerMotionMask;   /* always want it for root window */
 
       if(is_top_level)
-         mask|=FocusChangeMask;
+         mask|=FocusChangeMask|PropertyChangeMask;
 
       XSelectInput(disp,w,mask);
 
@@ -1014,6 +1041,14 @@ void  MainLoop(void)
             SwitchKeyboardForWindow(ev.xfocus.window);
          focus_window=ev.xfocus.window;
          break;
+      case(PropertyNotify):
+         if(AppData.per_window_state && ev.xproperty.atom==XA_WM_NAME
+         && ev.xproperty.state==PropertyNewValue)
+         {
+            int mode=GetKbdState(ev.xproperty.window);
+            if(mode!=-1)
+               SetTitleIndicator(ev.xproperty.window,mode);
+         }
       }
    }
 }
@@ -1282,6 +1317,7 @@ int   main(int argc,char **argv)
    StartArgs();
 #if TK==TK_MOTIF
    AddArg(XmNmwmDecorations,MWM_DECOR_BORDER);
+   AddArg(XmNmwmFunctions,MWM_FUNC_MOVE|MWM_FUNC_CLOSE);
 #elif TK==TK_NONE
    AddArg(XtNwidth,10); /* no toolkit - set size to avoid 0x0 size */
    AddArg(XtNheight,10);
@@ -1415,7 +1451,7 @@ int   main(int argc,char **argv)
 #if TK!=TK_MOTIF && TK!=TK_NONE
 {
    /* we have to emulate motif hints as we don't have Motif */
-   static long motif_hints[]={0x2,0xffffffff,0x2,0xffffffff,0x39250};
+   static long motif_hints[]={0x3, 0x24, 0x2, 0xffffffff, 0x4800002};
    Atom motif_hints_atom=XInternAtom(disp,"_MOTIF_WM_HINTS",False);
    XChangeProperty(disp,XtWindow(top_level),motif_hints_atom,motif_hints_atom,32,
          PropModeReplace,(void*)motif_hints,XtNumber(motif_hints));
