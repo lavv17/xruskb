@@ -1,3 +1,7 @@
+Version 1.15.4 - 2005-09-05
+
+* added ukrainian layout yawerty-ua from http://www.freewebs.com/nabis/phonetic_ua_maps.html
+
 Version 1.15.3 - 2002-05-24
 
 * increased MaxLetterKeysym to 0xF000 to support EuroSign (0x20ac) (suggested

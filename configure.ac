@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(xrus.c)
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(xruskb, 1.15.3)
+AM_INIT_AUTOMAKE(xruskb, 1.15.4)
 
 if test "$CFLAGS" = ""
 then
@@ -48,25 +48,25 @@ AC_ARG_WITH(toolkit, [  --with-toolkit=TK       use specified toolkit (motif, xa
 
 case "$with_toolkit" in
 motif)with_motif=yes
-      AC_DEFINE(TK,TK_MOTIF)
+      AC_DEFINE([TK], [TK_MOTIF])
       ;;
 xaw)  with_Xaw=yes
-      AC_DEFINE(TK,TK_XAW)
+      AC_DEFINE([TK], [TK_XAW])
       ;;
 none) with_Xaw=no
       with_motif=no
-      AC_DEFINE(TK,TK_NONE)
+      AC_DEFINE([TK], [TK_NONE])
       ;;
 "")   ;; # no tk specified, use first available
 *)    AC_MSG_ERROR([invalid toolkit name, use motif, xaw, or none])
       ;;
 esac
 
-AC_DEFUN(XRUS_CHECK_XAW,
+AC_DEFUN([XRUS_CHECK_XAW],
 [
    AC_CHECK_LIB($1,main,[
 	TOOLKIT_LIBS="-l$1"
-	AC_DEFINE(HAVE_LIBXAW)
+	AC_DEFINE([HAVE_LIBXAW])
 	],[],[-lXt -lXmu -Xext -lX11 $X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
 ])
 
@@ -90,7 +90,7 @@ dnl Check for Motif
 AC_PATH_MOTIF
 if test x$no_motif != xyes
 then
-   AC_DEFINE(HAVE_MOTIF)
+   AC_DEFINE([HAVE_MOTIF])
    if test "x$motif_includes" != x && test "x$motif_includes" != x/usr/include
    then
       TOOLKIT_INCLUDE="-I$motif_includes"

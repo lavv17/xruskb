@@ -9,7 +9,7 @@ xrus_LDADD = $(TOOLKIT_LIBS)\
  -lXmu -lXt -lXext -lX11 $(X_PRE_LIBS) $(X_LIBS) $(X_EXTRA_LIBS)\
  defres.o @ALLOCA@
 
-CPPFLAGS = $(X_CFLAGS)
+AM_CPPFLAGS = $(X_CFLAGS)
 INCLUDES = $(TOOLKIT_INCLUDE)
 
 defres.c: Xrus.ad mkdefres.awk
@@ -50,7 +50,7 @@ dist-hook:
 	    $(srcdir)/$(PACKAGE).lsm > $(distdir)/$(PACKAGE).lsm && \
 	    cp $(distdir)/$(PACKAGE).lsm $(srcdir)/$(PACKAGE).lsm
 
-REL_DIR=/ftp/pub/software/unix/X11
+REL_DIR=/ftp/pub/source/xruskb
 release:
 	cvs commit -m $(VERSION)
 	make dist
@@ -60,6 +60,9 @@ release:
 	cp -p $(PACKAGE).lsm $(REL_DIR)/$(PACKAGE)-$(VERSION).lsm
 	cd $(REL_DIR) && \
 	    (addbz $(PACKAGE)-$(VERSION).tar.gz; \
-	    rm -f $(PACKAGE).tar.gz && ln -s $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz)
+	    rm -f $(PACKAGE).tar.gz && ln -s $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz; \
+	    gpg -ba $(PACKAGE)-$(VERSION).tar.gz; \
+	    gpg -ba $(PACKAGE)-$(VERSION).tar.bz2; \
+	    md5sum $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE)-$(VERSION).tar.bz2 > $(PACKAGE)-$(VERSION).md5sum)
 	mutt -s add lsm@execpc.com < $(PACKAGE).lsm
 	cvs tag $(PACKAGE)-`echo $(VERSION) | sed 's/\./-/g'` .

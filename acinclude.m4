@@ -1,6 +1,6 @@
 dnl Functions for locating motif are taken from Lesstif distribution
 
-AC_DEFUN(AC_PATH_MOTIF_DIRECT,
+AC_DEFUN([AC_PATH_MOTIF_DIRECT],
 [test -z "$motif_direct_test_library" && motif_direct_test_library=Xm
 test -z "$motif_direct_test_function" && motif_direct_test_function=XmCreatePushButton
 test -z "$motif_direct_test_include" && motif_direct_test_include=Xm/Xm.h
@@ -91,7 +91,7 @@ do
   done
 done])
 
-AC_DEFUN(AC_PATH_MOTIF,
+AC_DEFUN([AC_PATH_MOTIF],
 [AC_REQUIRE_CPP()dnl
 
 motif_includes=NONE
