@@ -6,7 +6,8 @@ pkgdata_DATA = jcuken-cp866.xmm jcuken-iso5.xmm yawerty-cyr.xmm\
  jcuken-deru-cyr.xmm yawerty-deru-cp866.xmm yawerty-deru-koi8.xmm\
  yawerty-deru-cp1251.xmm hebrew.xmm hebrew-iso8.xmm\
  jcuken-frru-cp866.xmm jcuken-frru-iso5.xmm jcuken-frru-cp1251.xmm\
- jcuken-frru-koi8.xmm jcuken-frru-cyr.xmm fr.xmm
+ jcuken-frru-koi8.xmm jcuken-frru-cyr.xmm fr.xmm\
+ yawerty-ua-cyr.xmm yawerty-ua-koi8.xmm
 
 EXTRA_DIST = $(pkgdata_DATA) misc.m4 notice.m4 clear.m4 jcuken.m4 yawerty.m4\
  cp866.m4 cp1251.m4 iso5.m4 koi8.m4 README.keymaps jcuken-cp866.m4\
@@ -15,7 +16,7 @@ EXTRA_DIST = $(pkgdata_DATA) misc.m4 notice.m4 clear.m4 jcuken.m4 yawerty.m4\
  jcuken-deru.m4 yawerty-deru.m4 jcuken-deru-cp866.m4 jcuken-deru-cp1251.m4\
  jcuken-deru-cyr.m4 jcuken-deru-iso5.m4 jcuken-deru-koi8.m4 yawerty-deru-cp866.m4\
  yawerty-deru-cp1251.m4 yawerty-deru-cyr.m4 yawerty-deru-iso5.m4 yawerty-deru-koi8.m4\
- hebrew.m4 iso8.m4\
+ hebrew.m4 iso8.m4 yawerty-ua.m4 yawerty-ua-cyr.m4 yawerty-ua-koi8.m4\
  jcuken-frru.m4 jcuken-frru-cp866.m4 jcuken-frru-cp1251.m4\
  jcuken-frru-cyr.m4 jcuken-frru-iso5.m4 jcuken-frru-koi8.m4
 
@@ -33,6 +34,8 @@ yawerty-cp1251.xmm: yawerty-cp1251.m4 yawerty.m4 cp1251.m4
 yawerty-cyr.xmm:    yawerty-cyr.m4    yawerty.m4
 yawerty-iso5.xmm:   yawerty-iso5.m4   yawerty.m4 iso5.m4
 yawerty-koi8.xmm:   yawerty-koi8.m4   yawerty.m4 koi8.m4  
+yawerty-ua-cyr.xmm:  yawerty-ua-cyr.m4  yawerty-ua.m4
+yawerty-ua-koi8.xmm: yawerty-ua-koi8.m4 yawerty-ua.m4 koi8.m4
 
 jcuken-deru-cp866.xmm:   jcuken-deru-cp866.m4   jcuken-deru.m4  cp866.m4
 jcuken-deru-cp1251.xmm:  jcuken-deru-cp1251.m4  jcuken-deru.m4  cp1251.m4

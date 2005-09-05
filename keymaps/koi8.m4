@@ -64,3 +64,9 @@ define(`Cyrillic_TE',       `0xf4')dnl
 define(`Cyrillic_SOFTSIGN', `0xf8')dnl
 define(`Cyrillic_BE',       `0xe2')dnl
 define(`Cyrillic_YU',       `0xe0')dnl
+define(`Ukrainian_i',       `0xa6')dnl
+define(`Ukrainian_I',       `0xb6')dnl
+define(`Ukrainian_yi',      `0xa7')dnl
+define(`Ukrainian_YI',      `0xb7')dnl
+define(`Ukrainian_ie',      `0xa4')dnl
+define(`Ukrainian_IE',      `0xb4')dnl
