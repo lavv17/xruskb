@@ -5,7 +5,7 @@ Name: xruskb
 Summary: program for switching two keyboard layouts
 Version: %{version}
 Release: %{release}
-Copyright: GNU GPL
+License: GNU GPL
 Group: X11/Utilities
 Source: ftp://ftp.yars.free.net/pub/software/unix/X11/xruskb-%{version}.tar.gz
 BuildRoot: /tmp/xruskb-%{version}-root
